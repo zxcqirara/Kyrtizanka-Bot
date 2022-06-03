@@ -1,12 +1,12 @@
 # Coders Squad - Discord Bot
 **Discord bot with some helpful things for our (private, lol) discord server**
 
-Language/Build System
+## Language/Build System
 
 [![Kotlin](https://img.shields.io/badge/kotlin-1.6.20-blue.svg?logo=kotlin)](http://kotlinlang.org)
 [![Gradle](https://img.shields.io/badge/Gradle-7.4.2-blue?logo=gradle)](https://gradle.org)
 
-Dependencies
+## Dependencies
 
 ![Maven metadata URL](https://img.shields.io/maven-metadata/v?label=Kord&metadataUrl=https%3A%2F%2Frepo1.maven.org%2Fmaven2%2Fdev%2Fkord%2Fkord-core%2Fmaven-metadata.xml)
 ![Maven metadata URL](https://img.shields.io/maven-metadata/v?label=KordEx&metadataUrl=https%3A%2F%2Fmaven.kotlindiscord.com%2Frepository%2Fmaven-public%2Fcom%2Fkotlindiscord%2Fkord%2Fextensions%2Fkord-extensions%2Fmaven-metadata.xml&versionPrefix=1.5.4&versionSuffix=-SNAPSHOT)
@@ -21,3 +21,11 @@ Dependencies
 ![Maven Central](https://img.shields.io/maven-central/v/org.postgresql/postgresql?label=PostgreSQL&versionPrefix=42.3.5)
 ![Maven metadata URL](https://img.shields.io/maven-metadata/v?label=LavaPlayer&metadataUrl=https%3A%2F%2Fm2.dv8tion.net%2Freleases%2Fcom%2Fsedmelluq%2Flavaplayer%2Fmaven-metadata.xml&versionPrefix=1.3.77)
 ![JitPack](https://img.shields.io/jitpack/v/github/aikaterna/lavaplayer-natives?label=LavaPlayer%20Natives)
+
+## Start project
+
+Run in console from `cs_dsbot` dir:
+```bash
+./gradlew build
+./gradlew run
+```
