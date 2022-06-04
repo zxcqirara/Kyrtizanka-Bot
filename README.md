@@ -24,8 +24,13 @@
 
 ## Start project
 
-Run in console from `cs_dsbot` dir:
+1. Run in console from `cs_dsbot` dir:
 ```bash
 ./gradlew build
+./gradlew run
+```
+2. Configure created `config.yml` file
+3. Run bot again:
+```bash
 ./gradlew run
 ```
