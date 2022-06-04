@@ -2,9 +2,7 @@ package bot.extensions
 
 import bot.lib.Database
 import bot.lib.Utils
-import bot.readConfig
 import bot.tables.UserRow
-import com.kotlindiscord.kord.extensions.checks.isNotBot
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalMember
 import com.kotlindiscord.kord.extensions.extensions.Extension
@@ -12,25 +10,19 @@ import com.kotlindiscord.kord.extensions.extensions.event
 import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.types.respond
-import com.kotlindiscord.kord.extensions.utils.selfMember
 import dev.kord.common.Color
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
 import dev.kord.core.behavior.GuildBehavior
-import dev.kord.core.behavior.channel.createEmbed
 import dev.kord.core.entity.Member
-import dev.kord.core.entity.channel.TextChannel
-import dev.kord.core.event.message.MessageCreateEvent
+import dev.kord.core.entity.VoiceState
 import dev.kord.core.event.user.VoiceStateUpdateEvent
 import dev.kord.rest.builder.message.EmbedBuilder
 import dev.kord.rest.builder.message.create.embed
-import kotlinx.coroutines.flow.count
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.*
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import org.koin.core.component.inject
-import kotlin.math.roundToInt
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
@@ -45,7 +37,7 @@ class Experience : Extension() {
 		val kord = kord
 
 		// Experience from message
-		event<MessageCreateEvent> {
+		/*event<MessageCreateEvent> {
 			check {
 				isNotBot()
 
@@ -94,7 +86,7 @@ class Experience : Extension() {
 					}
 				}
 			}
-		}
+		}*/
 
 		suspend fun removeMember(member: Member) {
 			val seconds = (Clock.System.now() - joinedMembers[member]!!)
@@ -104,10 +96,17 @@ class Experience : Extension() {
 			joinedMembers.remove(member)
 		}
 
+		fun getValidStates(voiceStates: Flow<VoiceState>): Flow<VoiceState> {
+			return voiceStates
+				.filter { !it.getMember().isBot }
+				.filterNot { it.isMuted || it.isSelfMuted }
+				.filterNot { it.isDeafened || it.isSelfDeafened }
+		}
+
 		// Member entered channel
 		event<VoiceStateUpdateEvent> {
 			check {
-				isNotBot()
+				failIf(event.state.getMember().isBot)
 				failIf(event.old?.channelId != null)
 				failIf(joinedMembers.contains(event.state.getMember()))
 
@@ -116,10 +115,10 @@ class Experience : Extension() {
 			}
 
 			action {
+				val voiceStates = event.state.getChannelOrNull()?.voiceStates
+
 				if (
-					event.state.getChannelOrNull()!!.voiceStates
-						.filter { !it.getMember().isBot }
-						.count() < 2
+					voiceStates != null && getValidStates(voiceStates).count() < 2
 				) return@action
 
 				joinedMembers[event.state.getMember()] = Clock.System.now()
@@ -129,6 +128,7 @@ class Experience : Extension() {
 		// Member left channel
 		event<VoiceStateUpdateEvent> {
 			check {
+				failIf(event.state.getMember().isBot)
 				failIf(event.state.channelId != null)
 				failIfNot(joinedMembers.contains(event.state.getMember()))
 
@@ -137,22 +137,23 @@ class Experience : Extension() {
 			}
 
 			action {
-				val member = event.state.getMember()
+				removeMember(event.state.getMember())
 
-				removeMember(member)
+				val states = event.old?.getChannelOrNull()?.voiceStates
+					?: return@action
 
 				if (
-					event.old?.getChannelOrNull()!!.voiceStates
-						.filter { !it.getMember().isBot }
-						.count() == 1
-				) removeMember(event.old?.getChannelOrNull()?.voiceStates?.first()?.getMember()!!)
+					getValidStates(states).count() == 1
+				) {
+					removeMember(event.old?.getChannelOrNull()?.voiceStates?.first()?.getMember() ?: return@action)
+				}
 			}
 		}
 
 		// Mute/deafen filter
 		event<VoiceStateUpdateEvent> {
 			check {
-				isNotBot()
+				failIf(event.state.getMember().isBot)
 				failIf(event.state.channelId != event.old?.channelId)
 			}
 
