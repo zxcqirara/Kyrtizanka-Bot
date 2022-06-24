@@ -1,18 +1,20 @@
 package bot.lib
 
+import bot.database.experience.Experience
+import bot.database.experience.Experiences
+import bot.database.meme.Meme
+import bot.database.user.User
+import bot.database.user.Users
 import bot.readConfig
-import bot.tables.ExperienceTable
-import bot.tables.MemesScoreTable
-import bot.tables.UserRow
-import bot.tables.UsersTable
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toJavaInstant
-import org.ktorm.dsl.*
-import org.ktorm.entity.*
-import org.ktorm.support.postgresql.insertOrUpdate
+import org.jetbrains.exposed.sql.deleteAll
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
+import org.jetbrains.exposed.sql.transactions.transaction
 import kotlin.math.roundToLong
 import org.ktorm.database.Database as KtDatabase
 
@@ -34,32 +36,30 @@ object Database {
 		userId: Long,
 		count: Short,
 		moment: Instant
-	): XpUpdateEvent {
-		val nowHas = database.sequenceOf(UsersTable)
-			.find { it.userId eq userId }
+	): XpUpdateEvent = newSuspendedTransaction {
+		val nowHas = User.findById(userId)
 
 		if (nowHas == null) {
 			val xpEvent = XpUpdateEvent(count.toLong(), 0)
 			bot.send(xpEvent)
 
-			database.insert(UsersTable) {
-				set(it.userId, userId)
-				set(it.experience, count.toLong())
+			transaction {
+				User.new(userId) {
+					experience = count.toLong() * socialRating
 
-				if (xpEvent.needUpdate)
-					set(it.level, xpEvent.newLevel)
+					if (xpEvent.needUpdate)
+						level = xpEvent.newLevel
+				}
+
+				Experience.new {
+					this.userId = userId
+					this.count = count
+					time = moment.toJavaInstant()
+				}
 			}
 
-			database.insert(ExperienceTable) {
-				set(it.userId, userId)
-				set(it.count, count)
-				set(it.time, moment.toJavaInstant())
-				set(it.multiplier, 1f)
-			}
-
-			return xpEvent
-		}
-		else {
+			xpEvent
+		} else {
 			val multiplied = (if (nowHas.socialRating > 0)
 				count * nowHas.socialRating
 			else
@@ -70,24 +70,46 @@ object Database {
 			val xpEvent = XpUpdateEvent(newExp, nowHas.level)
 			bot.send(xpEvent)
 
-			database.update(UsersTable) {
-				set(it.experience, newExp)
+			transaction {
+				val userUpdate = User.findById(userId)!!
+				userUpdate.experience = newExp
 
 				if (xpEvent.needUpdate)
-					set(it.level, xpEvent.newLevel)
+					userUpdate.level = xpEvent.newLevel
 
-				where { it.userId eq userId }
+				val experienceUpdate = Experience.new {
+					this.userId = userId
+					this.count = count
+					time = moment.toJavaInstant()
+					multiplier = nowHas.socialRating / 10f
+				}
 			}
 
-			database.update(ExperienceTable) {
-				set(it.count, count)
-				set(it.time, moment.toJavaInstant())
-				set(it.multiplier, nowHas.socialRating / 10f)
+			xpEvent
+		}
+	}
 
-				where { it.userId eq userId }
+	fun removeExperience(
+		userId: Long,
+		count: Short,
+		moment: Instant
+	) = transaction {
+		val nowHas = User.findById(userId)
+
+		if (nowHas != null) {
+			nowHas.experience -= count
+
+			val experienceUpdate = Experience.find { Experiences.userId eq userId }.first()
+			experienceUpdate.count = (experienceUpdate.count - count).toShort()
+			experienceUpdate.time = moment.toJavaInstant()
+			experienceUpdate.multiplier = nowHas.socialRating / 10f
+		}
+		else {
+			Experience.new {
+				this.userId = userId
+				this.count = (-count).toShort()
+				time = moment.toJavaInstant()
 			}
-
-			return xpEvent
 		}
 	}
 
@@ -96,17 +118,11 @@ object Database {
 	 *
 	 * @param userId User ID
 	 */
-	fun getUser(userId: Snowflake): UserRow {
+	fun getUser(userId: Snowflake): User {
 		val longUserId = userId.value.toLong()
 
-		var data = database.sequenceOf(UsersTable)
-			.find { it.userId eq longUserId }
-
-		if (data == null) {
-			database.insert(UsersTable) { set(it.userId, longUserId) }
-
-			data = database.sequenceOf(UsersTable)
-				.find { it.userId eq longUserId }!!
+		val data = transaction {
+			User.findById(longUserId) ?: User.new(longUserId) {}
 		}
 
 		return data
@@ -116,8 +132,10 @@ object Database {
 	 * Clean up database
 	 */
 	fun cleanUp() {
-		database.deleteAll(UsersTable)
-		database.deleteAll(ExperienceTable)
+		transaction {
+			Users.deleteAll()
+			Experiences.deleteAll()
+		}
 	}
 
 	/**
@@ -125,10 +143,12 @@ object Database {
 	 *
 	 * @param count Count of users will be returned from top
 	 */
-	fun getTopUsers(count: Int): List<UserRow> {
-		return database.sequenceOf(UsersTable)
-			.sortedByDescending { it.experience }
-			.take(count).toList()
+	fun getTopUsers(count: Int): List<User> {
+		return transaction {
+			User.all()
+				.sortedByDescending { it.experience }
+				.take(count)
+		}
 	}
 
 	/**
@@ -141,11 +161,10 @@ object Database {
 		val userIdLong = userId.value.toLong()
 		val perSecond = readConfig().experience.perSecond
 
-		database.update(UsersTable) {
-			set(it.voiceTime, it.voiceTime + count)
-			set(it.experience, it.experience + (count * perSecond).roundToLong())
-
-			where { it.userId eq userIdLong }
+		transaction {
+			val userUpdate = User.findById(userIdLong)!!
+			userUpdate.voiceTime += count
+			userUpdate.experience += (count * perSecond).roundToLong()
 		}
 	}
 
@@ -156,10 +175,11 @@ object Database {
 	 * @param userId User ID
 	 */
 	suspend fun hasSpecialAccess(kord: Kord, userId: Snowflake): Boolean {
-		val user = database.sequenceOf(UsersTable)
-			.find { it.userId eq userId.value.toLong() }
+		val user = transaction {
+			User.findById(userId.value.toLong())
+		} ?: return false
 
-		return user!!.specialAccess || kord.getApplicationInfo().ownerId == userId
+		return user.specialAccess || kord.getApplicationInfo().ownerId == userId
 	}
 
 	/**
@@ -168,11 +188,11 @@ object Database {
 	 * @param userId User ID
 	 */
 	fun giveSpecialAccess(userId: Snowflake) {
-		database.insertOrUpdate(UsersTable) {
-			set(it.userId, userId.value.toLong())
-			set(it.specialAccess, true)
+		val userIdLong = userId.value.toLong()
 
-			onConflict { set(it.specialAccess, true) }
+		transaction {
+			User.findById(userIdLong)?.run { specialAccess = true }
+				?: User.new(userIdLong) { specialAccess = true }
 		}
 	}
 
@@ -182,27 +202,26 @@ object Database {
 	 * @param userId User ID
 	 */
 	fun takeSpecialAccess(userId: Snowflake) {
-		database.update(UsersTable) {
-			set(it.specialAccess, false)
-
-			where { it.userId eq userId.value.toLong() }
+		transaction {
+			User.findById(userId.value.toLong())
+				?.specialAccess = false
 		}
 	}
 
 	/**
 	 * Get list of users with special access
 	 */
-	fun getUsersWithSpecialAcess() =
-		database.sequenceOf(UsersTable)
-			.filter { it.specialAccess eq true }
+	fun getUsersWithSpecialAccess() = transaction {
+		User.find { Users.specialAccess eq true }.toList()
+	}
 
 	/**
 	 * Returns need use emoji for user
 	 */
-	fun useEmoji(userId: Snowflake) =
-		database.sequenceOf(UsersTable)
-			.find { it.userId eq userId.value.toLong() }
+	fun useEmoji(userId: Snowflake) = transaction {
+		User.findById(userId.value.toLong())
 			?.useEmoji ?: true
+	}
 
 	/**
 	 * Add rating to user
@@ -211,22 +230,19 @@ object Database {
 	 */
 	fun addRating(userId: Snowflake) {
 		val idLong = userId.value.toLong()
-		val current = database.sequenceOf(UsersTable)
-			.find { it.userId eq idLong }
 
-		if (current == null) {
-			database.insert(UsersTable) {
-				set(it.userId, idLong)
-				set(it.socialRating, 11)
+		transaction {
+			val current = User.findById(idLong)
+
+			if (current == null) {
+				User.new(idLong) {
+					socialRating = 11
+				}
 			}
-		}
-		else {
-			val newRating = if (current.socialRating == -2) 1 else current.socialRating + 1
+			else {
+				val newRating = if (current.socialRating == -2) 1 else current.socialRating + 1
 
-			database.update(UsersTable) {
-				set(it.socialRating, newRating)
-
-				where { it.userId eq idLong }
+				current.socialRating = newRating
 			}
 		}
 	}
@@ -238,22 +254,19 @@ object Database {
 	 */
 	fun removeRating(userId: Snowflake) {
 		val idLong = userId.value.toLong()
-		val current = database.sequenceOf(UsersTable)
-			.find { it.userId eq idLong }
 
-		if (current == null) {
-			database.insert(UsersTable) {
-				set(it.userId, idLong)
-				set(it.socialRating, 9)
+		transaction {
+			val current = User.findById(idLong)
+
+			if (current == null) {
+				User.new(idLong) {
+					socialRating = 9
+				}
 			}
-		}
-		else {
-			val newRating = if (current.socialRating == 1) -2 else current.socialRating - 1
+			else {
+				val newRating = if (current.socialRating == 1) -2 else current.socialRating - 1
 
-			database.update(UsersTable) {
-				set(it.socialRating, newRating)
-
-				where { it.userId eq idLong }
+				current.socialRating = newRating
 			}
 		}
 	}
@@ -264,8 +277,8 @@ object Database {
 	 * @param messageId Meme message ID
 	 */
 	fun createMeme(messageId: Snowflake) {
-		database.insert(MemesScoreTable) {
-			set(it.messageId, messageId.value.toLong())
+		transaction {
+			Meme.new(messageId.value.toLong()) {}
 		}
 	}
 
@@ -274,19 +287,18 @@ object Database {
 	 *
 	 * @param messageId Meme message ID
 	 */
-	fun memeMaxScore(messageId: Snowflake) =
-		database.sequenceOf(MemesScoreTable)
-		.find { it.messageId eq messageId.value.toLong() }?.maxScore
+	fun memeMaxScore(messageId: Snowflake) = transaction {
+		Meme.findById(messageId.value.toLong())?.maxScore
+	}
 
 	/**
 	 * Add score to meme
 	 *
 	 * @param messageId Meme message ID
 	 */
-	fun setMemeScore(messageId: Snowflake, score: Int) {
-		database.insert(MemesScoreTable) {
-			set(it.messageId, messageId.value.toLong())
-			set(it.maxScore, score)
+	fun setMemeScore(messageId: Snowflake, score: Int) = transaction {
+		Meme.new(messageId.value.toLong()) {
+			maxScore = score
 		}
 	}
 }

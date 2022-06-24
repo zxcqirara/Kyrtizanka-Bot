@@ -1,8 +1,12 @@
 package bot
 
+import bot.database.experience.Experiences
+import bot.database.meme.Memes
+import bot.database.rating.Ratings
+import bot.database.user.Users
+import bot.database.tag.Tags
 import bot.extensions.*
 import bot.lib.ConfigFile
-import bot.lib.Database
 import com.charleskorn.kaml.Yaml
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.i18n.SupportedLocales
@@ -12,8 +16,9 @@ import dev.kord.gateway.Intents
 import dev.kord.gateway.PrivilegedIntent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.ktorm.database.Database as KtDatabase
-import org.ktorm.support.postgresql.PostgreSqlDialect
+import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.Database as KtDatabase
 import java.io.File
 import kotlin.system.exitProcess
 import kotlin.time.ExperimentalTime
@@ -25,13 +30,16 @@ suspend fun main() {
 	val initedConfig = readConfig()
 	val dbData = initedConfig.database
 
-	Database.database = KtDatabase.Companion.connect(
+	KtDatabase.connect(
 		url = "jdbc:postgresql://${dbData.url}/${dbData.database}",
 		user = dbData.username,
 		password = dbData.password,
-		dialect = PostgreSqlDialect(),
 		driver = "org.postgresql.Driver"
 	)
+
+	transaction {
+		SchemaUtils.create(Users, Ratings, Experiences, Memes, Tags)
+	}
 
 	val bot = ExtensibleBot(initedConfig.token) {
 		intents {
@@ -76,6 +84,7 @@ suspend fun main() {
 			add(::StatsReport)
 			add(::MemeScore)
 			add(::SocialRating)
+			add(::Tags)
 		}
 	}
 

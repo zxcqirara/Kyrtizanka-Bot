@@ -2,7 +2,6 @@ package bot.extensions
 
 
 import bot.lib.Database
-import bot.tables.UsersTable
 import com.kotlindiscord.kord.extensions.checks.types.CheckContext
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.chat.ChatCommandContext
@@ -17,7 +16,6 @@ import dev.kord.core.behavior.reply
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.rest.builder.message.create.embed
 import org.koin.core.component.inject
-import org.ktorm.dsl.eq
 import org.ktorm.entity.*
 import javax.script.ScriptEngineManager
 
@@ -123,8 +121,8 @@ class Scripting : Extension() {
 					description = "extensions.scripting.allowed.list.commandDescription"
 
 					action {
-						val usersList = Database.getUsersWithSpecialAcess()
-							.joinToString("\n") { "<@${it.userId}>" }
+						val usersList = Database.getUsersWithSpecialAccess()
+							.joinToString("\n") { "<@${it.id.value}>" }
 
 						message.reply { embed {
 							title = translate("extensions.scripting.allowed.list.embed.title")

@@ -20,7 +20,6 @@ import dev.kord.core.behavior.channel.BaseVoiceChannelBehavior
 import dev.kord.core.behavior.channel.connect
 import dev.kord.core.behavior.edit
 import dev.kord.core.event.user.VoiceStateUpdateEvent
-import dev.kord.core.kordLogger
 import dev.kord.rest.builder.message.create.embed
 import dev.kord.voice.AudioFrame
 import kotlinx.coroutines.flow.count
@@ -34,7 +33,6 @@ import kotlin.coroutines.suspendCoroutine
 @KordVoice
 class Music : Extension() {
 	override val name = "music"
-	private val translationsProvider: TranslationsProvider by inject()
 
 	override suspend fun setup() {
 

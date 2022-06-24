@@ -1,8 +1,10 @@
 package bot.extensions
 
+import bot.database.user.User
 import bot.lib.Database
 import bot.lib.Utils
-import bot.tables.UserRow
+import bot.readConfig
+import com.kotlindiscord.kord.extensions.checks.isNotBot
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalMember
 import com.kotlindiscord.kord.extensions.extensions.Extension
@@ -10,12 +12,18 @@ import com.kotlindiscord.kord.extensions.extensions.event
 import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.types.respond
+import com.kotlindiscord.kord.extensions.utils.selfMember
 import dev.kord.common.Color
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
 import dev.kord.core.behavior.GuildBehavior
+import dev.kord.core.behavior.channel.createEmbed
 import dev.kord.core.entity.Member
 import dev.kord.core.entity.VoiceState
+import dev.kord.core.entity.channel.TextChannel
+import dev.kord.core.event.message.MessageCreateEvent
+import dev.kord.core.event.message.MessageDeleteEvent
+import dev.kord.core.event.message.MessageUpdateEvent
 import dev.kord.core.event.user.VoiceStateUpdateEvent
 import dev.kord.rest.builder.message.EmbedBuilder
 import dev.kord.rest.builder.message.create.embed
@@ -23,6 +31,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import org.koin.core.component.inject
+import kotlin.math.roundToInt
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
@@ -33,11 +42,10 @@ class Experience : Extension() {
 	private val translationsProvider: TranslationsProvider by inject()
 
 	override suspend fun setup() {
-		val ownerId = kord.getApplicationInfo().ownerId
 		val kord = kord
 
 		// Experience from message
-		/*event<MessageCreateEvent> {
+		event<MessageCreateEvent> {
 			check {
 				isNotBot()
 
@@ -86,7 +94,7 @@ class Experience : Extension() {
 					}
 				}
 			}
-		}*/
+		}
 
 		suspend fun removeMember(member: Member) {
 			val seconds = (Clock.System.now() - joinedMembers[member]!!)
@@ -202,7 +210,7 @@ class Experience : Extension() {
 							description += "\n$voiceSymbol $dura"
 						}
 
-						color = if (data.specialAccess || ownerId?.value?.toLong() == data.userId)
+						color = if (Database.hasSpecialAccess(kord, event.interaction.user.id))
 							Color(0x674EA7) else Color(0x3D85C6)
 
 						thumbnail { url = (target.avatar ?: target.defaultAvatar).url }
@@ -239,7 +247,7 @@ class Experience : Extension() {
 		suspend fun topEmbed(
 			kord: Kord,
 			translationsProvider: TranslationsProvider,
-			users: List<UserRow>,
+			users: List<User>,
 			guild: GuildBehavior,
 			useEmoji: Boolean
 		): EmbedBuilder {
@@ -263,8 +271,8 @@ class Experience : Extension() {
 								else -> ""
 							}
 
-							val member = guild.getMemberOrNull(Snowflake(user.userId))
-								?: kord.getUser(Snowflake(user.userId))
+							val member = guild.getMemberOrNull(Snowflake(user.id.value))
+								?: kord.getUser(Snowflake(user.id.value))
 
 							val nick = (member as? Member)?.nickname ?: member?.username ?: return@forEach
 

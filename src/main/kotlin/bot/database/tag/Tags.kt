@@ -4,7 +4,10 @@ import bot.lib.array
 import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.TextColumnType
 
-object Tag : IntIdTable() {
+object Tags : IntIdTable() {
+	val name = varchar("name", 30)
 	val text = varchar("text", 4000)
-	val images = array<String>("images", TextColumnType())
+	val attachments = array<String>("images", TextColumnType()).default(emptyArray())
+	@ExperimentalUnsignedTypes
+	val addedBy = ulong("added_by")
 }

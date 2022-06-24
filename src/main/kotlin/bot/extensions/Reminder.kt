@@ -1,7 +1,6 @@
 package bot.extensions
 
 import bot.lib.Utils
-import bot.tables.UsersTable
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.application.slash.ephemeralSubCommand
 import com.kotlindiscord.kord.extensions.commands.converters.impl.int

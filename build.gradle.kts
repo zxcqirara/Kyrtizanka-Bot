@@ -1,4 +1,6 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+val ktormVersion: String by project
+val exposedVersion: String by project
 
 plugins {
 	kotlin("jvm") version "1.6.20"
@@ -32,9 +34,15 @@ dependencies {
 
 	implementation("com.charleskorn.kaml:kaml:0.44.0")
 
-	implementation("org.ktorm:ktorm-core:3.4.1")
-	implementation("org.ktorm:ktorm-support-postgresql:3.4.1")
+	implementation("org.ktorm:ktorm-core:${ktormVersion}")
+	implementation("org.ktorm:ktorm-support-postgresql:${ktormVersion}")
 	implementation("org.postgresql:postgresql:42.3.5")
+
+	implementation("org.jetbrains.exposed:exposed-core:${exposedVersion}")
+	implementation("org.jetbrains.exposed:exposed-dao:${exposedVersion}")
+	implementation("org.jetbrains.exposed:exposed-jdbc:${exposedVersion}")
+	implementation("org.jetbrains.exposed:exposed-java-time:${exposedVersion}")
+	implementation("com.impossibl.pgjdbc-ng", "pgjdbc-ng", "0.8.3")
 
 	implementation("com.sedmelluq:lavaplayer:1.3.77")
 	implementation("com.github.aikaterna:lavaplayer-natives:original-SNAPSHOT")

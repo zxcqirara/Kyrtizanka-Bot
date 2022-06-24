@@ -1,8 +1,8 @@
-package bot.database
+package bot.database.user
 
 import org.jetbrains.exposed.dao.id.LongIdTable
 
-object Users : LongIdTable() {
+object Users : LongIdTable(columnName = "user_id") {
 	val experience = long("experience").default(0)
 	val voiceTime = long("voice_time").default(0)
 	val level = integer("level").default(0)
