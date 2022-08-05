@@ -32,11 +32,7 @@ dependencies {
 	implementation(kotlin("scripting-jsr223"))
 	runtimeOnly(kotlin("script-runtime"))
 
-	implementation("com.charleskorn.kaml:kaml:0.44.0")
-
-	implementation("org.ktorm:ktorm-core:${ktormVersion}")
-	implementation("org.ktorm:ktorm-support-postgresql:${ktormVersion}")
-	implementation("org.postgresql:postgresql:42.3.5")
+	implementation("com.charleskorn.kaml:kaml:0.46.0")
 
 	implementation("org.jetbrains.exposed:exposed-core:${exposedVersion}")
 	implementation("org.jetbrains.exposed:exposed-dao:${exposedVersion}")

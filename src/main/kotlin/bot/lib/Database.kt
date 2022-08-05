@@ -12,15 +12,11 @@ import dev.kord.core.Kord
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toJavaInstant
 import org.jetbrains.exposed.sql.deleteAll
-import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
 import kotlin.math.roundToLong
-import org.ktorm.database.Database as KtDatabase
 
 object Database {
-	lateinit var database: KtDatabase
-
 	/**
 	 * Add experience to member
 	 *
