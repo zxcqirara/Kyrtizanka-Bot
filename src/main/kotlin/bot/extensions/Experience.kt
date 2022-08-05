@@ -22,8 +22,6 @@ import dev.kord.core.entity.Member
 import dev.kord.core.entity.VoiceState
 import dev.kord.core.entity.channel.TextChannel
 import dev.kord.core.event.message.MessageCreateEvent
-import dev.kord.core.event.message.MessageDeleteEvent
-import dev.kord.core.event.message.MessageUpdateEvent
 import dev.kord.core.event.user.VoiceStateUpdateEvent
 import dev.kord.rest.builder.message.EmbedBuilder
 import dev.kord.rest.builder.message.create.embed
@@ -38,6 +36,7 @@ import kotlin.time.toDuration
 
 class Experience : Extension() {
 	override val name = "experience"
+	override val bundle = "cs_dsbot"
 
 	private val translationsProvider: TranslationsProvider by inject()
 
