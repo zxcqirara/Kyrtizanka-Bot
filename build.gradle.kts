@@ -23,10 +23,10 @@ dependencies {
 			requireCapability("dev.kord:core-voice:0.8.x-SNAPSHOT")
 		}
 	}
-	implementation("com.kotlindiscord.kord.extensions:kord-extensions:1.5.4-SNAPSHOT")
+	implementation("com.kotlindiscord.kord.extensions:kord-extensions:1.5.5-SNAPSHOT")
 	implementation("com.kotlindiscord.kord.extensions:time4j:1.5.3-SNAPSHOT")
 
-	implementation("io.sentry:sentry:5.7.4")
+	implementation("io.sentry:sentry:6.3.0")
 	implementation("org.slf4j:slf4j-log4j12:2.0.0-alpha1")
 
 	implementation(kotlin("scripting-jsr223"))
