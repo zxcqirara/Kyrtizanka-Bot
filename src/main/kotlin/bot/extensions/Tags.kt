@@ -63,6 +63,13 @@ class Tags : Extension() {
 				val ref = message.referencedMessage
 					?: return@action run { message.reply { content = translate("extensions.errors.nonReferenced") } }
 
+				val isTagExists = transaction {
+					Tag.find { Tags.name eq arguments.name }.firstOrNull() != null
+				}
+
+				if (isTagExists)
+					return@action run { message.reply { content = translate("extensions.tags.alreadyExists") } }
+
 				newSuspendedTransaction {
 					Tag.new {
 						name = arguments.name
