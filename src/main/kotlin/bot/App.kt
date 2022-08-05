@@ -31,10 +31,10 @@ suspend fun main() {
 	val dbData = initedConfig.database
 
 	KtDatabase.connect(
-		url = "jdbc:postgresql://${dbData.url}/${dbData.database}",
+		url = "jdbc:pgsql://${dbData.url}/${dbData.database}",
 		user = dbData.username,
 		password = dbData.password,
-		driver = "org.postgresql.Driver"
+		driver = "com.impossibl.postgres.jdbc.PGDriver"
 	)
 
 	transaction {
