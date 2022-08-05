@@ -6,7 +6,6 @@ import com.kotlindiscord.kord.extensions.commands.converters.impl.string
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.event
 import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
-import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.modules.time.time4j.toHuman
 import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.selfMember
@@ -26,13 +25,13 @@ import kotlinx.coroutines.flow.count
 import net.time4j.ClockUnit
 import net.time4j.Duration
 import net.time4j.IsoUnit
-import org.koin.core.component.inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 @KordVoice
 class Music : Extension() {
 	override val name = "music"
+	override val bundle = "cs_dsbot"
 
 	override suspend fun setup() {
 

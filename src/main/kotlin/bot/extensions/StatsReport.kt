@@ -18,6 +18,7 @@ import kotlin.time.ExperimentalTime
 @ExperimentalTime
 class StatsReport : Extension() {
 	override val name = "stats-report"
+	override val bundle = "cs_dsbot"
 
 	private val translationsProvider: TranslationsProvider by inject()
 

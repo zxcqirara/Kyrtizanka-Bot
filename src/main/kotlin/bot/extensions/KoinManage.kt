@@ -12,6 +12,7 @@ import org.koin.core.component.inject
 
 class KoinManage : Extension() {
 	override val name = "koin_manage"
+	override val bundle = "cs_dsbot"
 
 	private val translationsProvider: TranslationsProvider by inject()
 

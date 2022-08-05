@@ -23,6 +23,7 @@ import kotlin.time.ExperimentalTime
 @ExperimentalTime
 class Reminder : Extension() {
 	override val name = "reminder"
+	override val bundle = "cs_dsbot"
 
 	private val reminds = mutableListOf<Remind>()
 	private val translationsProvider: TranslationsProvider by inject()

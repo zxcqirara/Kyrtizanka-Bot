@@ -26,6 +26,7 @@ import kotlin.time.Duration
 
 class Votes : Extension() {
 	override val name = "votes"
+	override val bundle = "cs_dsbot"
 
 	private val votes = mutableListOf<Vote>()
 	val translatorProvider: TranslationsProvider by inject()

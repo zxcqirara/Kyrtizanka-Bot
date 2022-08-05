@@ -7,6 +7,7 @@ import dev.kord.core.event.message.MessageCreateEvent
 
 class Tuts : Extension() {
 	override val name = "tuts"
+	override val bundle = "cs_dsbot"
 
 	override suspend fun setup() {
 		event<MessageCreateEvent> {

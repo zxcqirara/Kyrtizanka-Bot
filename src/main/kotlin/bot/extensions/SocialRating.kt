@@ -13,6 +13,7 @@ import kotlin.time.Duration.Companion.minutes
 
 class SocialRating : Extension() {
 	override val name = "social-rating"
+	override val bundle = "cs_dsbot"
 
 	private val antiSpamScheduler = Scheduler()
 	private val respected = mutableListOf<Respected>()

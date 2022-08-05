@@ -9,6 +9,7 @@ import kotlin.time.ExperimentalTime
 @ExperimentalTime
 class PingCommand : Extension() {
 	override val name = "ping"
+	override val bundle = "cs_dsbot"
 
 	override suspend fun setup() {
 		publicSlashCommand {

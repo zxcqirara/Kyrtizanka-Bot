@@ -18,6 +18,7 @@ import kotlin.time.Duration.Companion.seconds
 
 class Fun : Extension() {
 	override val name = "fun"
+	override val bundle = "cs_dsbot"
 
 	private val translationProvider: TranslationsProvider by inject()
 

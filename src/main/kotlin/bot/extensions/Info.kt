@@ -7,6 +7,7 @@ import dev.kord.rest.builder.message.create.embed
 
 class Info : Extension() {
 	override val name = "info"
+	override val bundle = "cs_dsbot"
 
 	override suspend fun setup() {
 		publicSlashCommand {

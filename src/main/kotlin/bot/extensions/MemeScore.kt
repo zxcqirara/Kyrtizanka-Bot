@@ -14,6 +14,7 @@ import kotlinx.datetime.Clock
 
 class MemeScore : Extension() {
 	override val name = "meme-score"
+	override val bundle = "cs_dsbot"
 
 	override suspend fun setup() {
 		event<ReactionAddEvent> {

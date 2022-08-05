@@ -16,11 +16,11 @@ import dev.kord.core.behavior.reply
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.rest.builder.message.create.embed
 import org.koin.core.component.inject
-import org.ktorm.entity.*
 import javax.script.ScriptEngineManager
 
 class Scripting : Extension() {
 	override val name = "scripting"
+	override val bundle = "cs_dsbot"
 	private val translationsProvider: TranslationsProvider by inject()
 
 	override suspend fun setup() {
