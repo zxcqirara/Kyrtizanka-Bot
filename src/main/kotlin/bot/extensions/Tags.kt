@@ -3,9 +3,10 @@ package bot.extensions
 import bot.database.tag.Tag
 import bot.database.tag.Tags
 import com.kotlindiscord.kord.extensions.commands.Arguments
-import com.kotlindiscord.kord.extensions.commands.converters.impl.string
+import com.kotlindiscord.kord.extensions.commands.converters.impl.coalescingString
 import com.kotlindiscord.kord.extensions.extensions.*
 import com.kotlindiscord.kord.extensions.types.respond
+import com.kotlindiscord.kord.extensions.utils.addReaction
 import com.kotlindiscord.kord.extensions.utils.hasPermission
 import com.kotlindiscord.kord.extensions.utils.isNullOrBot
 import dev.kord.common.entity.Permission
@@ -17,6 +18,7 @@ import java.net.URL
 
 class Tags : Extension() {
 	override val name = "tags"
+	override val bundle = "cs_dsbot"
 
 	override suspend fun setup() {
 		event<MessageCreateEvent> {
@@ -66,11 +68,12 @@ class Tags : Extension() {
 						name = arguments.name
 						text = ref.content
 						attachments = ref.attachments.map { it.proxyUrl }.toTypedArray()
-						addedBy = message.author!!.id.value
+						addedBy = message.author!!.id.value.toLong()
 					}
 				}
 
-				event.message.reply { content = translate("extensions.tags.success") }
+//				event.message.reply { content = translate("extensions.tags.success") }
+				event.message.addReaction("✅")
 			}
 		}
 
@@ -81,16 +84,33 @@ class Tags : Extension() {
 			action {
 				val list = transaction {
 					Tag.all().toList()
-				}.joinToString("\n") { it.name }
+				}.joinToString("\n") { "#${it.name}" }
 					.takeIf { it.isNotEmpty() } ?: translate("extensions.tags.list.noTags")
 
 				respond { content = list }
 			}
 		}
+
+		ephemeralSlashCommand(::TagArgs) {
+			name = "extensions.tags.remove.commandName"
+			description = "extensions.tags.remove.commandDescription"
+
+			action {
+				val tag = transaction {
+					Tag.find { Tags.name eq arguments.name }.firstOrNull()
+				} ?: return@action run { respond { content = translate("extensions.tags.remove.invalidTag") } }
+
+				if (tag.addedBy != member!!.id.value.toLong())
+					return@action run { respond { content = translate("extensions.tags.remove.notYourTag") } }
+
+				transaction { tag.delete() }
+				respond { content = translate("extensions.tags.remove.success") }
+			}
+		}
 	}
 
 	inner class TagArgs : Arguments() {
-		val name by string {
+		val name by coalescingString {
 			name = "name"
 			description = "Name of your tag"
 		}
