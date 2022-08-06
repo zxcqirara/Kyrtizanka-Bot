@@ -85,6 +85,7 @@ suspend fun main() {
 			add(::MemeScore)
 			add(::SocialRating)
 			add(::Tags)
+			add(::PrivateRooms)
 		}
 	}
 

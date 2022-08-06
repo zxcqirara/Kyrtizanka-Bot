@@ -11,7 +11,8 @@ data class ConfigFile(
 	val memesChannelId: String = "",
 	val memeScore: Int = 10,
 	val experience: Experience = Experience(),
-	val database: ConfigDatabase = ConfigDatabase()
+	val database: ConfigDatabase = ConfigDatabase(),
+	val privates: Privates = Privates()
 )
 
 @Serializable
@@ -27,4 +28,10 @@ data class ConfigDatabase(
 	val username: String = "postgres",
 	val password: String = "",
 	val database: String = "coders_squad"
+)
+
+@Serializable
+data class Privates(
+	val categoryId: String = "",
+	val createChannelId: String = ""
 )
