@@ -54,7 +54,7 @@ suspend fun main() {
 		}
 
 		presence {
-			playing("Genshin Impact")
+			playing("Stray")
 		}
 
 		chatCommands {
