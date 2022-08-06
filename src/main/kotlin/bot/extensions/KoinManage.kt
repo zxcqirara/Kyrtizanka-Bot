@@ -11,7 +11,7 @@ import com.kotlindiscord.kord.extensions.types.respond
 import org.koin.core.component.inject
 
 class KoinManage : Extension() {
-	override val name = "koin_manage"
+	override val name = "koin-manage"
 	override val bundle = "cs_dsbot"
 
 	private val translationsProvider: TranslationsProvider by inject()
