@@ -73,7 +73,7 @@ object Database {
 				if (xpEvent.needUpdate)
 					userUpdate.level = xpEvent.newLevel
 
-				val experienceUpdate = Experience.new {
+				Experience.new {
 					this.userId = userId
 					this.count = count
 					time = moment.toJavaInstant()
