@@ -12,7 +12,7 @@
 ![Maven metadata URL](https://img.shields.io/maven-metadata/v?label=KordEx&metadataUrl=https%3A%2F%2Fmaven.kotlindiscord.com%2Frepository%2Fmaven-public%2Fcom%2Fkotlindiscord%2Fkord%2Fextensions%2Fkord-extensions%2Fmaven-metadata.xml&versionPrefix=1.5.5&versionSuffix=-SNAPSHOT)
 ![Maven metadata URL](https://img.shields.io/maven-metadata/v?label=Time4J&metadataUrl=https%3A%2F%2Fmaven.kotlindiscord.com%2Frepository%2Fmaven-public%2Fcom%2Fkotlindiscord%2Fkord%2Fextensions%2Ftime4j%2Fmaven-metadata.xml&versionPrefix=1.5.3&versionSuffix=-SNAPSHOT)
 ![Maven Central](https://img.shields.io/maven-central/v/io.sentry/sentry?label=Sentry&versionPrefix=6.3.0)
-![Maven Central](https://img.shields.io/maven-central/v/org.slf4j/slf4j-log4j12?label=Log4J&versionPrefix=2.0.0-alpha1)
+![Maven Central](https://img.shields.io/maven-central/v/org.slf4j/slf4j-log4j12?label=Log4J&versionPrefix=2.0.0-beta0)
 ![Maven Central](https://img.shields.io/maven-central/v/org.jetbrains.kotlin/kotlin-scripting-jsr223?label=Kotlin%20Scripting%20Jsr223)
 ![Maven Central](https://img.shields.io/maven-central/v/org.jetbrains.kotlin/kotlin-script-runtime?label=Kotlin%20Script%20Runtime)
 ![Maven Central](https://img.shields.io/maven-central/v/com.charleskorn.kaml/kaml?label=Kaml&versionPrefix=0.43.0)
