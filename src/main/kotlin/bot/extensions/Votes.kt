@@ -56,6 +56,8 @@ class Votes : Extension() {
 					components {
 						choices.forEach { label ->
 							ephemeralButton {
+								bundle = this@Votes.bundle
+
 								this.label = label
 								emoji("⬆️")
 
@@ -82,6 +84,8 @@ class Votes : Extension() {
 						}
 
 						ephemeralButton {
+							bundle = this@Votes.bundle
+
 							style = ButtonStyle.Secondary
 							label = translate("extensions.votes.seeResults")
 

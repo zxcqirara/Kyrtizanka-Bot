@@ -75,6 +75,8 @@ class Fun : Extension() {
 
 					components(60.seconds) {
 						publicButton {
+							bundle = this@Fun.bundle
+
 							label = translate("extensions.fun.duel.waiting.buttons.accept")
 							style = ButtonStyle.Success
 
@@ -97,6 +99,8 @@ class Fun : Extension() {
 						}
 
 						publicButton {
+							bundle = this@Fun.bundle
+
 							label = translate("extensions.fun.duel.waiting.buttons.refuse")
 							style = ButtonStyle.Danger
 
