@@ -54,7 +54,7 @@ suspend fun main() {
 		}
 
 		presence {
-			playing("Stray")
+			playing(initedConfig.game)
 		}
 
 		chatCommands {
