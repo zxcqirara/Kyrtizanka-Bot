@@ -192,9 +192,9 @@ class Experience : Extension() {
 				val data = Database.getUser(target.id)
 				val nextLevelXp = Utils.xpForLevel(data.level + 1)
 
-				val expSymbol = xpSymbol(translationsProvider, data.useEmoji)
-				val voiceSymbol = voiceSymbol(translationsProvider, data.useEmoji)
-				val ratingSymbol = ratingSymbol(translationsProvider, data.useEmoji)
+				val expSymbol = xpSymbol(translationsProvider, this@Experience.bundle, data.useEmoji)
+				val voiceSymbol = voiceSymbol(translationsProvider, this@Experience.bundle, data.useEmoji)
+				val ratingSymbol = ratingSymbol(translationsProvider, this@Experience.bundle, data.useEmoji)
 
 				respond {
 					embed {
@@ -227,7 +227,9 @@ class Experience : Extension() {
 				val useEmoji = Database.useEmoji(event.interaction.user.id)
 
 				respond {
-					embeds += topEmbed(kord, translationsProvider, users, guild!!, useEmoji)
+					embeds += topEmbed(
+						kord, this@Experience.translationsProvider, this@Experience.bundle, users, guild!!, useEmoji
+					)
 				}
 			}
 		}
@@ -246,16 +248,17 @@ class Experience : Extension() {
 		suspend fun topEmbed(
 			kord: Kord,
 			translationsProvider: TranslationsProvider,
+			bundleName: String,
 			users: List<User>,
 			guild: GuildBehavior,
 			useEmoji: Boolean
 		): EmbedBuilder {
-			val expSymb = xpSymbol(translationsProvider, useEmoji)
-			val voiceSymb = voiceSymbol(translationsProvider, useEmoji)
-			val ratingSymbol = ratingSymbol(translationsProvider, useEmoji)
+			val expSymb = xpSymbol(translationsProvider, bundleName, useEmoji)
+			val voiceSymb = voiceSymbol(translationsProvider, bundleName, useEmoji)
+			val ratingSymbol = ratingSymbol(translationsProvider, bundleName, useEmoji)
 
 			return EmbedBuilder().apply {
-				title = translationsProvider.translate("extensions.experience.top.embed.title")
+				title = translationsProvider.translate("extensions.experience.top.embed.title", bundleName = bundleName)
 
 				users
 					.filter { it.experience > 0 }
@@ -290,13 +293,25 @@ class Experience : Extension() {
 			}
 		}
 
-		private fun xpSymbol(translationsProvider: TranslationsProvider, useEmoji: Boolean) = if (useEmoji)
-			"🔹" else translationsProvider.translate("extensions.experience.top.embed.symbols.experience")
+		private fun xpSymbol(
+			translationsProvider: TranslationsProvider,
+			bundleName: String,
+			useEmoji: Boolean
+		) = if (useEmoji) "🔹" else
+			translationsProvider.translate("extensions.experience.top.embed.symbols.experience", bundleName = bundleName)
 
-		private fun voiceSymbol(translationsProvider: TranslationsProvider, useEmoji: Boolean) = if (useEmoji)
-			"🔉" else translationsProvider.translate("extensions.experience.top.embed.symbols.voice")
+		private fun voiceSymbol(
+			translationsProvider: TranslationsProvider,
+			bundleName: String,
+			useEmoji: Boolean
+		) = if (useEmoji) "🔉" else
+			translationsProvider.translate("extensions.experience.top.embed.symbols.voice", bundleName = bundleName)
 
-		private fun ratingSymbol(translationsProvider: TranslationsProvider, useEmoji: Boolean) = if (useEmoji)
-			"👥" else translationsProvider.translate("extensions.experience.top.embed.symbols.rating")
+		private fun ratingSymbol(
+			translationsProvider: TranslationsProvider,
+			bundleName: String,
+			useEmoji: Boolean
+		) = if (useEmoji) "👥" else
+			translationsProvider.translate("extensions.experience.top.embed.symbols.rating", bundleName = bundleName)
 	}
 }

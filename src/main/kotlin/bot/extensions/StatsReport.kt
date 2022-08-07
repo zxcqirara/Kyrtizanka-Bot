@@ -37,14 +37,12 @@ class StatsReport : Extension() {
 
 		// Log start time
 		kordLogger.info(translationsProvider.translate(
-			"extensions.experience.stats.reportLog",
-			replacements = arrayOf(initPublishTime)
+			"extensions.experience.stats.reportLog", bundle, arrayOf(initPublishTime)
 		))
 
 		// Log initial delay
 		kordLogger.info(translationsProvider.translate(
-			"extensions.experience.stats.logDelay",
-			replacements = arrayOf(initialDelay)
+			"extensions.experience.stats.logDelay", bundle, arrayOf(initialDelay)
 		))
 
 		Scheduler().schedule(initialDelay, repeat = true) {
@@ -65,7 +63,9 @@ class StatsReport : Extension() {
 
 			// Send top
 			channel.createMessage {
-				embeds += Experience.topEmbed(kord, translationsProvider, users, channel.guild, true)
+				embeds += Experience.topEmbed(
+					kord, translationsProvider, this@StatsReport.bundle, users, channel.guild, true
+				)
 			}
 
 			// Clear DB
