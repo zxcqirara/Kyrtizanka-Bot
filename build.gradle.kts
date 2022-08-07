@@ -3,7 +3,7 @@ val ktormVersion: String by project
 val exposedVersion: String by project
 
 plugins {
-	kotlin("jvm") version "1.6.20"
+	kotlin("jvm") version "1.7.0"
 	kotlin("plugin.serialization") version "1.6.20"
 	application
 }
