@@ -4,7 +4,7 @@
 ## Language/Build System
 
 [![Kotlin](https://img.shields.io/badge/kotlin-1.7.0-blue.svg?logo=kotlin)](http://kotlinlang.org)
-[![Gradle](https://img.shields.io/badge/Gradle-7.4.2-blue?logo=gradle)](https://gradle.org)
+[![Gradle](https://img.shields.io/badge/Gradle-7.5.1-blue?logo=gradle)](https://gradle.org)
 
 ## Dependencies
 
