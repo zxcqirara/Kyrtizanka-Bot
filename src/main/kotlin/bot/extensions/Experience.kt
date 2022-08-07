@@ -270,7 +270,7 @@ class Experience : Extension() {
 								1 -> "🥇 "
 								2 -> "🥈 "
 								3 -> "🥉 "
-								else -> ""
+								else -> "$index. "
 							}
 
 							val member = guild.getMemberOrNull(Snowflake(user.id.value))
@@ -278,7 +278,7 @@ class Experience : Extension() {
 
 							val nick = (member as? Member)?.nickname ?: member?.username ?: return@forEach
 
-							name += "$index. $nick"
+							name += nick
 							value = "**$expSymb** ${user.experience} (${user.level}) | **$ratingSymbol** ${user.socialRating}"
 
 							if (user.voiceTime != 0L) {
