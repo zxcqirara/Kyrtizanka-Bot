@@ -52,7 +52,7 @@ class Experience : Extension() {
 
 				failIf(
 					ignored.contains(event.message.channelId) ||
-						ignored.contains((event.message.getChannel() as TextChannel).categoryId)
+						ignored.contains((event.message.getChannel() as? TextChannel)?.categoryId)
 				)
 
 				failIf(event.message.content == "+rep")
