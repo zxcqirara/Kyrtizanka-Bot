@@ -48,7 +48,7 @@ suspend fun main() {
 		}
 
 		i18n {
-			defaultLocale = SupportedLocales.ENGLISH
+			defaultLocale = SupportedLocales.RUSSIAN
 
 			interactionUserLocaleResolver()
 		}
