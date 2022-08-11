@@ -42,7 +42,7 @@ class Votes : Extension() {
 					.split(",")
 
 				val voteStartTime = Utils.parseTime(Clock.System.now())
-				val vote = Vote(arguments.title, choices.map(::Choice))
+				val vote = Vote(arguments.title, choices.map(::Choice), translatorProvider, this@Votes.bundle)
 				votes.add(vote)
 
 				val voteMessage = channel.createMessage {
@@ -173,11 +173,15 @@ class Votes : Extension() {
 
 	data class Vote(
 		val title: String,
-		val choices: List<Choice>
+		val choices: List<Choice>,
+		val translationsProvider: TranslationsProvider,
+		val bundle: String
 	) {
 		fun getStatsString() = buildString {
 			choices.forEach { choice ->
-				appendLine("**${choice.name}** `${choice.votedUsers.size}` votes")
+				appendLine(
+					translationsProvider.translate("extensions.votes.votesInfo", bundle, listOf(choice))
+				)
 			}
 		}
 	}
