@@ -47,6 +47,7 @@ class Experience : Extension() {
 		event<MessageCreateEvent> {
 			check {
 				isNotBot()
+				failIf(event.member?.isBot ?: true)
 
 				val ignored = readConfig().experience.ignore.map(::Snowflake)
 

@@ -26,6 +26,8 @@ class MemeScore : Extension() {
 			}
 
 			action {
+				if (event.getUser().isBot) return@action
+
 				val count = event.message.getReactors(event.emoji).count()
 				val maxScore = Database.memeMaxScore(event.messageId)
 					?: run { Database.createMeme(event.messageId); 0 }
@@ -57,6 +59,7 @@ class MemeScore : Extension() {
 			check {
 				failIf(event.message.channelId != Snowflake(readConfig().memesChannelId))
 				isNotBot()
+				failIf(event.member?.isBot ?: true)
 			}
 
 			action {

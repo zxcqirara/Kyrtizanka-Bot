@@ -38,7 +38,7 @@ class SocialRating : Extension() {
 				failIf(event.message.referencedMessage == null)
 				failIf(event.message.author == event.message.referencedMessage?.author)
 				isNotBot()
-				failIf(event.message.author?.isBot ?: true)
+				failIf(event.member?.isBot ?: true)
 			}
 
 			action {
