@@ -16,15 +16,15 @@ class SocialRating : Extension() {
 	override val bundle = "cs_dsbot"
 
 	private val antiSpamScheduler = Scheduler()
-	private val respected = mutableListOf<Respected>()
+	private val respects = mutableListOf<Respect>()
 	private val ratelimited = mutableListOf<Snowflake>()
 
 	private fun rateLimit(from: Snowflake, to: Snowflake) {
-		respected.add(Respected(from, to))
+		respects.add(Respect(from, to))
 		ratelimited.add(from)
 
 		antiSpamScheduler.schedule(12.hours, pollingSeconds = 3600) { // 12.hours, pollingSeconds = 3600
-			respected.remove(Respected(from, to))
+			respects.remove(Respect(from, to))
 		}
 
 		antiSpamScheduler.schedule(15.minutes, pollingSeconds = 60) { // 15.minutes, pollingSeconds = 60
@@ -42,36 +42,38 @@ class SocialRating : Extension() {
 			}
 
 			action {
-				val from = event.message.author?.id ?: return@action
-				val to = event.message.referencedMessage!!.author?.id ?: return@action
+				val fromId = event.message.author?.id ?: return@action
+				val to = event.message.referencedMessage!!.author ?: return@action
+				if (to.isBot) return@action
+				val toId = to.id
 
 				when (event.message.content) {
 					"+rep" -> {
 						if (
-							respected.find { it.from == from }?.to == to ||
-							ratelimited.contains(from)
+							respects.find { it.from == fromId }?.to == toId ||
+							ratelimited.contains(fromId)
 						) {
 							event.message.addReaction("🕒")
 							return@action
 						}
 
-						Database.addRating(to)
-						rateLimit(from, to)
+						Database.addRating(toId)
+						rateLimit(fromId, toId)
 
 						event.message.addReaction("✅")
 					}
 
 					"-rep" -> {
 						if (
-							respected.find { it.from == from }?.to == to ||
-							ratelimited.contains(from)
+							respects.find { it.from == fromId }?.to == toId ||
+							ratelimited.contains(fromId)
 						) {
 							event.message.addReaction("🕒")
 							return@action
 						}
 
-						Database.removeRating(to)
-						rateLimit(from, to)
+						Database.removeRating(toId)
+						rateLimit(fromId, toId)
 
 						event.message.addReaction("✅")
 					}
@@ -80,7 +82,7 @@ class SocialRating : Extension() {
 		}
 	}
 
-	private data class Respected(
+	private data class Respect(
 		val from: Snowflake,
 		val to: Snowflake
 	)
