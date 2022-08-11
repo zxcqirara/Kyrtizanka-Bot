@@ -6,7 +6,11 @@ plugins {
 	kotlin("jvm") version "1.7.0"
 	kotlin("plugin.serialization") version "1.6.20"
 	application
+	id("com.palantir.git-version") version "0.15.0"
 }
+
+val gitVersion: groovy.lang.Closure<String> by extra
+version = gitVersion()
 
 repositories {
 	mavenCentral()
