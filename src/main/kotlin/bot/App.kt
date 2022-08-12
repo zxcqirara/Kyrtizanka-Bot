@@ -2,7 +2,7 @@ package bot
 
 import bot.database.experience.Experiences
 import bot.database.meme.Memes
-import bot.database.rating.Ratings
+import bot.database.rating.RatingRateLimits
 import bot.database.user.Users
 import bot.database.tag.Tags
 import bot.extensions.*
@@ -38,7 +38,7 @@ suspend fun main() {
 	)
 
 	transaction {
-		SchemaUtils.create(Users, Ratings, Experiences, Memes, Tags)
+		SchemaUtils.create(Users, RatingRateLimits, Experiences, Memes, Tags)
 	}
 
 	val bot = ExtensibleBot(initedConfig.token) {

@@ -3,6 +3,8 @@ package bot.lib
 import bot.database.experience.Experience
 import bot.database.experience.Experiences
 import bot.database.meme.Meme
+import bot.database.rating.RatingRateLimit
+import bot.database.rating.RatingRateLimits
 import bot.database.user.User
 import bot.database.user.Users
 import bot.readConfig
@@ -265,6 +267,42 @@ object Database {
 				current.socialRating = newRating
 			}
 		}
+	}
+
+	/**
+	 * Add rating cool-down
+	 *
+	 * @param from User, who respected
+	 * @param to User, who was respected
+	 */
+	fun addRateLimit(from: Snowflake, to: Snowflake, expireTime: Instant): Long {
+		val fromId = from.value.toLong()
+		val toId = to.value.toLong()
+
+		return transaction {
+			val action = RatingRateLimit.new {
+				this.from = fromId
+				this.to = toId
+				this.expire = expireTime.toJavaInstant()
+			}
+
+			return@transaction action.id.value
+		}
+	}
+
+	/**
+	 * Remove cool-down from user
+	 *
+	 * @param id ID of row
+	 */
+	fun removeRateLimit(id: Long) {
+		transaction {
+			RatingRateLimit.findById(id)?.delete()
+		}
+	}
+
+	fun hasRateLimit(userId: Snowflake) = transaction {
+		RatingRateLimit.find { RatingRateLimits.from eq userId.value.toLong() }.count() > 0
 	}
 
 	/**
