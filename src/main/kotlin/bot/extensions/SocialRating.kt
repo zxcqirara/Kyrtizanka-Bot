@@ -18,15 +18,15 @@ class SocialRating : Extension() {
 	private val respectsScheduler = Scheduler()
 	private val rateLimitedScheduler = Scheduler()
 
-	private val respects = mutableListOf<Respect>()
+	private val recentRespects = mutableListOf<Respect>()
 	private val rateLimited = mutableListOf<Snowflake>()
 
 	private fun rateLimit(from: Snowflake, to: Snowflake) {
-		respects.add(Respect(from, to))
+		recentRespects.add(Respect(from, to))
 		rateLimited.add(from)
 
 		respectsScheduler.schedule(12.hours, pollingSeconds = 3600) { // 12.hours, pollingSeconds = 3600
-			respects.remove(Respect(from, to))
+			recentRespects.remove(Respect(from, to))
 		}
 
 		rateLimitedScheduler.schedule(15.minutes, pollingSeconds = 60) { // 15.minutes, pollingSeconds = 60
@@ -52,7 +52,7 @@ class SocialRating : Extension() {
 				when (event.message.content) {
 					"+rep" -> {
 						if (
-							respects.find { it.from == fromId }?.to == toId ||
+							recentRespects.find { it.from == fromId }?.to == toId ||
 							rateLimited.contains(fromId)
 						) {
 							event.message.addReaction("🕒")
@@ -67,7 +67,7 @@ class SocialRating : Extension() {
 
 					"-rep" -> {
 						if (
-							respects.find { it.from == fromId }?.to == toId ||
+							recentRespects.find { it.from == fromId }?.to == toId ||
 							rateLimited.contains(fromId)
 						) {
 							event.message.addReaction("🕒")
