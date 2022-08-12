@@ -49,43 +49,12 @@ class SocialRating : Extension() {
 				if (to.isBot) return@action
 				val toId = to.id
 
-				when (event.message.content) {
-					"+rep" -> {
-						if (
-							recentRespects.find { it.from == fromId }?.to == toId ||
-							rateLimited.contains(fromId)
-						) {
-							event.message.addReaction("🕒")
-							return@action
-						}
-
-						Database.addRating(toId)
-						rateLimit(fromId, toId)
-
-						event.message.addReaction("✅")
-					}
-
-					"-rep" -> {
-						if (
-							recentRespects.find { it.from == fromId }?.to == toId ||
-							rateLimited.contains(fromId)
-						) {
-							event.message.addReaction("🕒")
-							return@action
-						}
-
-						Database.removeRating(toId)
-						rateLimit(fromId, toId)
-
-						event.message.addReaction("✅")
-					}
+				val isPlusRep = when (event.message.content) {
+					"+rep" -> true
+					"-rep" -> false
+					else -> return@action
 				}
 			}
 		}
 	}
-
-	private data class Respect(
-		val from: Snowflake,
-		val to: Snowflake
-	)
 }
