@@ -206,8 +206,8 @@ class Experience : Extension() {
 						""".trimIndent()
 
 						if (data.voiceTime > 0L) {
-							val dura = data.voiceTime.toDuration(DurationUnit.SECONDS)
-							description += "\n$voiceSymbol $dura"
+							val voiceDuration = data.voiceTime.toDuration(DurationUnit.SECONDS)
+							description += "\n**$voiceSymbol** $voiceDuration"
 						}
 
 						color = if (Database.hasSpecialAccess(kord, event.interaction.user.id))
