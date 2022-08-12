@@ -13,6 +13,7 @@ import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toJavaInstant
+import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.deleteAll
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -301,8 +302,30 @@ object Database {
 		}
 	}
 
-	fun hasRateLimit(userId: Snowflake) = transaction {
-		RatingRateLimit.find { RatingRateLimits.from eq userId.value.toLong() }.count() > 0
+	/**
+	 * Check if user has rate-limit for respect another user
+	 *
+	 * @param from User, who respected
+	 * @param to User, who was respected
+	 */
+	fun hasRateLimit(from: Snowflake, to: Snowflake) = transaction {
+		val fromId = from.value.toLong()
+		val toId = to.value.toLong()
+
+		(RatingRateLimit.find {
+			(RatingRateLimits.from eq fromId) and (RatingRateLimits.to eq toId)
+		}.firstOrNull() ?: RatingRateLimit.find { RatingRateLimits.from eq fromId }.firstOrNull()) != null
+	}
+
+	/**
+	 * Check if user has global rate-limit
+	 *
+	 * @param userId User ID
+	 */
+	fun hasGlobalRateLimit(userId: Snowflake) = transaction {
+		RatingRateLimit.find {
+			(RatingRateLimits.from eq userId.value.toLong()) and (RatingRateLimits.to eq null)
+		}.count() > 0
 	}
 
 	/**

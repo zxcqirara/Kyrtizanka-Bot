@@ -27,12 +27,13 @@ class SocialRating : Extension() {
 
 		val globalRateLimitTime = now + 15.minutes
 		val globalRateLimitRowId = Database.addRateLimit(from, to, globalRateLimitTime)
-
-		val localRateLimitTime = now + 12.hours
-		val localRateLimitRowId = Database.addRateLimit(from, to, localRateLimitTime)
-
 		rateLimitsCache[globalRateLimitRowId] = globalRateLimitTime
-		rateLimitsCache[localRateLimitRowId] = localRateLimitTime
+
+		if (!Database.hasGlobalRateLimit(from)) {
+			val localRateLimitTime = now + 12.hours
+			val localRateLimitRowId = Database.addRateLimit(from, to, localRateLimitTime)
+			rateLimitsCache[localRateLimitRowId] = localRateLimitTime
+		}
 	}
 
 	override suspend fun setup() {
@@ -56,7 +57,7 @@ class SocialRating : Extension() {
 					else -> return@action
 				}
 
-				if (Database.hasRateLimit(fromId))
+				if (Database.hasRateLimit(fromId, toId))
 					return@action event.message.addReaction("🕒")
 
 				if (isPlusRep)
