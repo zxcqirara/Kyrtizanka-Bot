@@ -4,10 +4,15 @@ import bot.lib.Database
 import com.kotlindiscord.kord.extensions.checks.isNotBot
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.event
+import com.kotlindiscord.kord.extensions.extensions.publicMessageCommand
+import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.addReaction
-import com.kotlindiscord.kord.extensions.utils.scheduling.Scheduler
 import dev.kord.common.entity.Snowflake
+import dev.kord.core.event.gateway.ReadyEvent
 import dev.kord.core.event.message.MessageCreateEvent
+import kotlinx.coroutines.delay
+import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 
@@ -15,23 +20,19 @@ class SocialRating : Extension() {
 	override val name = "social-rating"
 	override val bundle = "cs_dsbot"
 
-	private val respectsScheduler = Scheduler()
-	private val rateLimitedScheduler = Scheduler()
-
-	private val recentRespects = mutableListOf<Respect>()
-	private val rateLimited = mutableListOf<Snowflake>()
+	private val rateLimitsCache = mutableMapOf<Long, Instant>()
 
 	private fun rateLimit(from: Snowflake, to: Snowflake) {
-		recentRespects.add(Respect(from, to))
-		rateLimited.add(from)
+		val now = Clock.System.now()
 
-		respectsScheduler.schedule(12.hours, pollingSeconds = 3600) { // 12.hours, pollingSeconds = 3600
-			recentRespects.remove(Respect(from, to))
-		}
+		val globalRateLimitTime = now + 15.minutes
+		val globalRateLimitRowId = Database.addRateLimit(from, to, globalRateLimitTime)
 
-		rateLimitedScheduler.schedule(15.minutes, pollingSeconds = 60) { // 15.minutes, pollingSeconds = 60
-			rateLimited.remove(from)
-		}
+		val localRateLimitTime = now + 12.hours
+		val localRateLimitRowId = Database.addRateLimit(from, to, localRateLimitTime)
+
+		rateLimitsCache[globalRateLimitRowId] = globalRateLimitTime
+		rateLimitsCache[localRateLimitRowId] = localRateLimitTime
 	}
 
 	override suspend fun setup() {
@@ -54,6 +55,40 @@ class SocialRating : Extension() {
 					"-rep" -> false
 					else -> return@action
 				}
+
+				if (Database.hasRateLimit(fromId))
+					return@action event.message.addReaction("🕒")
+
+				if (isPlusRep)
+					Database.addRating(toId)
+				else
+					Database.removeRating(toId)
+
+				rateLimit(fromId, toId)
+				event.message.addReaction("✅")
+			}
+		}
+
+		event<ReadyEvent> {
+			while (true) {
+				rateLimitsCache.forEach { (id, expireTime) ->
+					val now = Clock.System.now()
+
+					if (now >= expireTime) {
+						Database.removeRateLimit(id)
+						rateLimitsCache.remove(id)
+					}
+				}
+
+				delay(1_000)
+			}
+		}
+
+		publicMessageCommand {
+			name = "Rollback rep"
+
+			action {
+				respond { content = "Rollback..." }
 			}
 		}
 	}
