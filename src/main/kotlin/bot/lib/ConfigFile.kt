@@ -11,6 +11,7 @@ data class ConfigFile(
 	val memesChannelId: String = "",
 	val memeScore: Int = 10,
 	val game: String = "Stray",
+	val sentryLink: String = "",
 	val experience: Experience = Experience(),
 	val database: ConfigDatabase = ConfigDatabase(),
 	val privates: Privates = Privates()

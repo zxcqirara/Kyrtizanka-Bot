@@ -67,8 +67,10 @@ suspend fun main() {
 		}
 
 		extensions {
-			sentry {
-				dsn = "https://b0af7b2f9c8748378bcc49f1a197a5cf@o1205879.ingest.sentry.io/6336610"
+			if (initedConfig.sentryLink.isNotEmpty()) {
+				sentry {
+					dsn = initedConfig.sentryLink
+				}
 			}
 
 			add(::PingCommand)
