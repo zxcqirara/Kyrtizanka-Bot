@@ -15,20 +15,22 @@ class SocialRating : Extension() {
 	override val name = "social-rating"
 	override val bundle = "cs_dsbot"
 
-	private val antiSpamScheduler = Scheduler()
+	private val respectsScheduler = Scheduler()
+	private val rateLimitedScheduler = Scheduler()
+
 	private val respects = mutableListOf<Respect>()
-	private val ratelimited = mutableListOf<Snowflake>()
+	private val rateLimited = mutableListOf<Snowflake>()
 
 	private fun rateLimit(from: Snowflake, to: Snowflake) {
 		respects.add(Respect(from, to))
-		ratelimited.add(from)
+		rateLimited.add(from)
 
-		antiSpamScheduler.schedule(12.hours, pollingSeconds = 3600) { // 12.hours, pollingSeconds = 3600
+		respectsScheduler.schedule(12.hours, pollingSeconds = 3600) { // 12.hours, pollingSeconds = 3600
 			respects.remove(Respect(from, to))
 		}
 
-		antiSpamScheduler.schedule(15.minutes, pollingSeconds = 60) { // 15.minutes, pollingSeconds = 60
-			ratelimited.remove(from)
+		rateLimitedScheduler.schedule(15.minutes, pollingSeconds = 60) { // 15.minutes, pollingSeconds = 60
+			rateLimited.remove(from)
 		}
 	}
 
@@ -51,7 +53,7 @@ class SocialRating : Extension() {
 					"+rep" -> {
 						if (
 							respects.find { it.from == fromId }?.to == toId ||
-							ratelimited.contains(fromId)
+							rateLimited.contains(fromId)
 						) {
 							event.message.addReaction("🕒")
 							return@action
@@ -66,7 +68,7 @@ class SocialRating : Extension() {
 					"-rep" -> {
 						if (
 							respects.find { it.from == fromId }?.to == toId ||
-							ratelimited.contains(fromId)
+							rateLimited.contains(fromId)
 						) {
 							event.message.addReaction("🕒")
 							return@action
