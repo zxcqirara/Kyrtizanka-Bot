@@ -63,12 +63,12 @@ class Music : Extension() {
 		}
 
 		publicSlashCommand {
-			name = "music"
-			description = "Manage music"
+			name = "extensions.music.commandName"
+			description = "extensions.music.commandDescription"
 
 			publicSubCommand(::PlayArgs) {
-				name = "play"
-				description = "Start playin"
+				name = "extensions.music.play.commandName"
+				description = "extensions.music.play.commandDescription"
 
 				action {
 					val vc = member?.getVoiceStateOrNull()?.getChannelOrNull()
@@ -96,8 +96,8 @@ class Music : Extension() {
 			}
 
 			publicSubCommand {
-				name = "chill"
-				description = "Start chill radio"
+				name = "extensions.music.chill.commandName"
+				description = "extensions.music.chill.commandDescription"
 
 				action {
 					val vc = member?.getVoiceStateOrNull()?.getChannelOrNull()
@@ -118,8 +118,8 @@ class Music : Extension() {
 			}
 
 			publicSubCommand {
-				name = "stop"
-				description = "Stop playing"
+				name = "extensions.music.stop.commandName"
+				description = "extensions.music.stop.commandDescription"
 
 				action {
 					player.stopTrack()
@@ -129,8 +129,8 @@ class Music : Extension() {
 			}
 
 			publicSubCommand {
-				name = "disconnect"
-				description = "Disconnect from VC"
+				name = "extensions.music.disconnect.commandName"
+				description = "extensions.music.disconnect.commandDescription"
 
 				action {
 					player.stopTrack()
@@ -141,8 +141,8 @@ class Music : Extension() {
 			}
 
 			publicSubCommand {
-				name = "pause"
-				description = "Pause/Resume playing"
+				name = "extensions.music.pause.commandName"
+				description = "extensions.music.pause.commandDescription"
 
 				action {
 					player.isPaused = !player.isPaused
@@ -176,7 +176,7 @@ class Music : Extension() {
 	inner class PlayArgs : Arguments() {
 		val track by string {
 			name = "track"
-			description = "Track (or ytsearch:[Query])"
+			description = "extensions.music.play.arguments.track"
 		}
 	}
 }

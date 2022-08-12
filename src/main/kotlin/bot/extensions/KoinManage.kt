@@ -27,7 +27,7 @@ class KoinManage : Extension() {
 			}
 
 			ephemeralSubCommand(::NameArgs) {
-				name = "load" // extensions.koin.load.commandName
+				name = "extensions.koin.load.commandName"
 				description = "extensions.koin.load.commandDescription"
 
 				action {
@@ -38,8 +38,8 @@ class KoinManage : Extension() {
 			}
 
 			ephemeralSubCommand(::NameArgs) {
-				name = "unload" // extensions.koin.unload.commandName
-				description = "Unload module" // extensions.koin.unload.commandDescription
+				name = "extensions.koin.unload.commandName"
+				description = "extensions.koin.unload.commandDescription"
 
 				action {
 					bot.unloadExtension(arguments.name)
@@ -49,8 +49,8 @@ class KoinManage : Extension() {
 			}
 
 			ephemeralSubCommand {
-				name = "list" // extensions.koin.list.commandName
-				description = "List of modules" // extensions.koin.list.commandDescription
+				name = "extensions.koin.list.commandName"
+				description = "extensions.koin.list.commandDescription"
 
 				action {
 					println(bot.extensions)

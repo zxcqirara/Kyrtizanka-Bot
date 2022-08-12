@@ -34,8 +34,8 @@ class Reminder : Extension() {
 			description = "extensions.reminder.commandDescription"
 
 			ephemeralSubCommand(::CreateArgs) {
-				name = "create" // extensions.reminder.create.commandName
-				description = "Create remind" // extensions.reminder.create.commandDescription
+				name = "extensions.reminder.create.commandName"
+				description = "extensions.reminder.create.commandDescription"
 
 				action {
 					val text = arguments.text
@@ -79,8 +79,8 @@ class Reminder : Extension() {
 			}
 
 			ephemeralSubCommand {
-				name = "list" // extensions.reminder.list.commandName
-				description = "Shows your reminds list" // extensions.reminder.list.commandDescription
+				name = "extensions.reminder.list.commandName"
+				description = "extensions.reminder.list.commandDescription"
 
 				action {
 					val reminds = reminds.filter { it.user == user }
@@ -106,8 +106,8 @@ class Reminder : Extension() {
 			}
 
 			ephemeralSubCommand(::RemoveArgs) {
-				name = "remove" // extensions.reminder.remove.commandName
-				description = "Remove remind" // extensions.reminder.remove.commandDescription
+				name = "extensions.reminder.remove.commandName"
+				description = "extensions.reminder.remove.commandDescription"
 
 				action {
 					val remind = reminds.getOrNull(arguments.id)
