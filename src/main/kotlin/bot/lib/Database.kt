@@ -321,9 +321,9 @@ object Database {
 	 * @param from User, who respected
 	 * @param to User, who was respected
 	 */
-	fun addRateLimit(from: Snowflake, to: Snowflake, expireTime: Instant): Long {
+	fun addRateLimit(from: Snowflake, to: Snowflake?, expireTime: Instant): Long {
 		val fromId = from.value.toLong()
-		val toId = to.value.toLong()
+		val toId = to?.value?.toLong()
 
 		return transaction {
 			val action = RatingRateLimit.new {

@@ -30,7 +30,7 @@ class SocialRating : Extension() {
 		val now = Clock.System.now()
 
 		val globalRateLimitTime = now + 15.minutes
-		val globalRateLimitRowId = Database.addRateLimit(from, to, globalRateLimitTime)
+		val globalRateLimitRowId = Database.addRateLimit(from, null, globalRateLimitTime)
 		rateLimitsCache[globalRateLimitRowId] = globalRateLimitTime
 
 		if (!Database.hasGlobalRateLimit(from)) {
