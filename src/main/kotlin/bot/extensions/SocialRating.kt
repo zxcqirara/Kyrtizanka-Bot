@@ -4,12 +4,16 @@ import bot.lib.Database
 import com.kotlindiscord.kord.extensions.checks.isNotBot
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalMember
+import com.kotlindiscord.kord.extensions.components.components
+import com.kotlindiscord.kord.extensions.components.publicButton
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.ephemeralSlashCommand
 import com.kotlindiscord.kord.extensions.extensions.event
 import com.kotlindiscord.kord.extensions.extensions.publicMessageCommand
 import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.addReaction
+import com.kotlindiscord.kord.extensions.utils.deleteOwnReaction
+import dev.kord.common.entity.ButtonStyle
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.event.gateway.ReadyEvent
 import dev.kord.core.event.message.MessageCreateEvent
@@ -19,6 +23,7 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
 
 class SocialRating : Extension() {
 	override val name = "social-rating"
@@ -29,15 +34,15 @@ class SocialRating : Extension() {
 	private fun rateLimit(from: Snowflake, to: Snowflake) {
 		val now = Clock.System.now()
 
-		val globalRateLimitTime = now + 15.minutes
-		val globalRateLimitRowId = Database.addRateLimit(from, null, globalRateLimitTime)
-		rateLimitsCache[globalRateLimitRowId] = globalRateLimitTime
-
 		if (!Database.hasGlobalRateLimit(from)) {
 			val localRateLimitTime = now + 12.hours
 			val localRateLimitRowId = Database.addRateLimit(from, to, localRateLimitTime)
 			rateLimitsCache[localRateLimitRowId] = localRateLimitTime
 		}
+
+		val globalRateLimitTime = now + 15.minutes
+		val globalRateLimitRowId = Database.addRateLimit(from, null, globalRateLimitTime)
+		rateLimitsCache[globalRateLimitRowId] = globalRateLimitTime
 	}
 
 	override suspend fun setup() {
@@ -75,6 +80,8 @@ class SocialRating : Extension() {
 					Database.removeRating(toId)
 
 				rateLimit(fromId, toId)
+				Database.addRepMessage(event.message, isPlusRep)
+
 				event.message.addReaction("✅")
 			}
 		}
@@ -97,21 +104,24 @@ class SocialRating : Extension() {
 		}
 
 		ephemeralSlashCommand(::SRBlacklistArgs) {
-			name = "extensions.srBlacklist.commandName"
-			description = "extensions.srBlacklist.commandDescription"
+			name = "extensions.socialRating.blacklist.commandName"
+			description = "extensions.socialRating.blacklist.commandDescription"
 
 			check {
-				failIf(!Database.hasSpecialAccess(kord, event.interaction.user.id), "You need special access")
+				failIf(
+					!Database.hasSpecialAccess(kord, event.interaction.user.id),
+					translate("extensions.errors.specialAccess", this@SocialRating.bundle)
+				)
 			}
 
 			action {
 				if (arguments.member == null) {
 					respond {
 						embed {
-							title = translate("extensions.srBlacklist.embed.title")
+							title = translate("extensions.socialRating.blacklist.embed.title")
 							description = Database.getBlackListedUsers().map {
 								event.kord.getUser(Snowflake(it.id.value))?.mention
-									?: "*${translate("extensions.srBlacklist.userNotFound")}*"
+									?: "*${translate("extensions.socialRating.blacklist.userNotFound")}*"
 							}.joinToString("\n")
 						}
 					}
@@ -123,14 +133,14 @@ class SocialRating : Extension() {
 						Database.removeUserFromBlackList(user.id)
 
 						respond {
-							content = translate("extensions.srBlacklist.removed", arrayOf(user.mention))
+							content = translate("extensions.socialRating.blacklist.removed", arrayOf(user.mention))
 						}
 					}
 					else {
 						Database.addUserToBlackList(user.id)
 
 						respond {
-							content = translate("extensions.srBlacklist.added", arrayOf(user.mention))
+							content = translate("extensions.socialRating.blacklist.added", arrayOf(user.mention))
 						}
 					}
 				}
@@ -138,10 +148,56 @@ class SocialRating : Extension() {
 		}
 
 		publicMessageCommand {
-			name = "Rollback rep"
+			name = "extensions.socialRating.rollback.buttonName"
+
+			check {
+				failIf(
+					!Database.hasSpecialAccess(kord, event.interaction.user.id),
+					translate("extensions.errors.specialAccess", this@SocialRating.bundle)
+				)
+
+				val repMessage = Database.getRepMessage(event.interaction.targetId)
+				failIf(repMessage == null, translate("extensions.socialRating.errors.notRepMessage", bundle))
+			}
 
 			action {
-				respond { content = "Rollback..." }
+				val eventInitiator = event.interaction.user
+				val repMessage = Database.getRepMessage(event.interaction.targetId)!!
+
+				if (repMessage.isPlus)
+					Database.removeRating(Snowflake(repMessage.to))
+				else
+					Database.addRating(Snowflake(repMessage.to))
+
+				Database.removeRepMessage(Snowflake(repMessage.id.value))
+				event.interaction.target.deleteOwnReaction("✅")
+
+				respond {
+					content = translate("extensions.socialRating.rollback.success", this@SocialRating.bundle)
+
+					components(60.seconds) {
+						publicButton {
+							style = ButtonStyle.Danger
+							label = translate("extensions.socialRating.rollback.buttons.resetTimeout", this@SocialRating.bundle)
+
+							check {
+								failIf(event.interaction.user.id != eventInitiator.id)
+							}
+
+							action {
+								Database.removeRateLimitsFrom(repMessage.from)
+								rateLimitsCache.remove(repMessage.to)
+
+								respond {
+									content = translate(
+										"extensions.socialRating.rollback.buttons.resetTimeout.success",
+										this@SocialRating.bundle
+									)
+								}
+							}
+						}
+					}
+				}
 			}
 		}
 	}
@@ -149,7 +205,7 @@ class SocialRating : Extension() {
 	inner class SRBlacklistArgs : Arguments() {
 		val member by optionalMember {
 			name = "member"
-			description = "extensions.srBlacklist.arguments.member"
+			description = "extensions.socialRating.blacklist.arguments.member"
 		}
 	}
 }

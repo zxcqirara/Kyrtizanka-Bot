@@ -5,12 +5,14 @@ import bot.database.experience.Experiences
 import bot.database.meme.Meme
 import bot.database.rating.RatingRateLimit
 import bot.database.rating.RatingRateLimits
+import bot.database.rep_messages.RepMessage
 import bot.database.user.User
 import bot.database.user.Users
 import bot.readConfig
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
+import dev.kord.core.entity.Message
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toJavaInstant
 import org.jetbrains.exposed.sql.and
@@ -337,13 +339,25 @@ object Database {
 	}
 
 	/**
-	 * Remove cool-down from user
+	 * Remove cool-down from user by row ID
 	 *
 	 * @param id ID of row
 	 */
 	fun removeRateLimit(id: Long) {
 		transaction {
 			RatingRateLimit.findById(id)?.delete()
+		}
+	}
+
+	/**
+	 * Remove cool-downs from user
+	 *
+	 * @param from From user ID
+	 */
+	fun removeRateLimitsFrom(from: Long) {
+		transaction {
+			RatingRateLimit.find { RatingRateLimits.from eq from }
+				.forEach { it.delete() }
 		}
 	}
 
@@ -371,6 +385,42 @@ object Database {
 		RatingRateLimit.find {
 			(RatingRateLimits.from eq userId.value.toLong()) and (RatingRateLimits.to eq null)
 		}.count() > 0
+	}
+
+	/**
+	 * Add rep message in DB
+	 *
+	 * @param message Message ID
+	 * @param isPlus Indicates that message is plus or minus rep
+	 */
+	fun addRepMessage(message: Message, isPlus: Boolean) {
+		transaction {
+			RepMessage.new(message.id.value.toLong()) {
+				from = message.author!!.id.value.toLong()
+				to = message.referencedMessage!!.author!!.id.value.toLong()
+				this.isPlus = isPlus
+			}
+		}
+	}
+
+	/**
+	 * Remove rep message from DB
+	 *
+	 * @param messageId Message ID
+	 */
+	fun removeRepMessage(messageId: Snowflake) {
+		transaction {
+			RepMessage.findById(messageId.value.toLong())?.delete()
+		}
+	}
+
+	/**
+	 * Get rep message by ID
+	 *
+	 * @param messageId Message ID
+	 */
+	fun getRepMessage(messageId: Snowflake) = transaction {
+		RepMessage.findById(messageId.value.toLong())
 	}
 
 	/**
