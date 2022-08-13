@@ -2,7 +2,10 @@ package bot.extensions
 
 import bot.lib.Database
 import com.kotlindiscord.kord.extensions.checks.isNotBot
+import com.kotlindiscord.kord.extensions.commands.Arguments
+import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalMember
 import com.kotlindiscord.kord.extensions.extensions.Extension
+import com.kotlindiscord.kord.extensions.extensions.ephemeralSlashCommand
 import com.kotlindiscord.kord.extensions.extensions.event
 import com.kotlindiscord.kord.extensions.extensions.publicMessageCommand
 import com.kotlindiscord.kord.extensions.types.respond
@@ -10,6 +13,7 @@ import com.kotlindiscord.kord.extensions.utils.addReaction
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.event.gateway.ReadyEvent
 import dev.kord.core.event.message.MessageCreateEvent
+import dev.kord.rest.builder.message.create.embed
 import kotlinx.coroutines.delay
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
@@ -60,6 +64,11 @@ class SocialRating : Extension() {
 				if (Database.hasRateLimit(fromId, toId))
 					return@action event.message.addReaction("🕒")
 
+				if (
+					Database.getUser(fromId).socialBlackList ||
+					Database.getUser(toId).socialBlackList
+				) return@action
+
 				if (isPlusRep)
 					Database.addRating(toId)
 				else
@@ -71,17 +80,60 @@ class SocialRating : Extension() {
 		}
 
 		event<ReadyEvent> {
-			while (true) {
-				rateLimitsCache.forEach { (id, expireTime) ->
-					val now = Clock.System.now()
+			action {
+				while (true) {
+					rateLimitsCache.forEach { (id, expireTime) ->
+						val now = Clock.System.now()
 
-					if (now >= expireTime) {
-						Database.removeRateLimit(id)
-						rateLimitsCache.remove(id)
+						if (now >= expireTime) {
+							Database.removeRateLimit(id)
+							rateLimitsCache.remove(id)
+						}
+					}
+
+					delay(10_000)
+				}
+			}
+		}
+
+		ephemeralSlashCommand(::SRBlacklistArgs) {
+			name = "extensions.srBlacklist.commandName"
+			description = "extensions.srBlacklist.commandDescription"
+
+			check {
+				failIf(!Database.hasSpecialAccess(kord, event.interaction.user.id), "You need special access")
+			}
+
+			action {
+				if (arguments.member == null) {
+					respond {
+						embed {
+							title = translate("extensions.srBlacklist.embed.title")
+							description = Database.getBlackListedUsers().map {
+								event.kord.getUser(Snowflake(it.id.value))?.mention
+									?: "*${translate("extensions.srBlacklist.userNotFound")}*"
+							}.joinToString("\n")
+						}
 					}
 				}
+				else {
+					val user = arguments.member!!.asUser()
 
-				delay(1_000)
+					if (Database.getBlackListedUsers().map { it.id.value }.contains(user.id.value.toLong())) {
+						Database.removeUserFromBlackList(user.id)
+
+						respond {
+							content = translate("extensions.srBlacklist.removed", arrayOf(user.mention))
+						}
+					}
+					else {
+						Database.addUserToBlackList(user.id)
+
+						respond {
+							content = translate("extensions.srBlacklist.added", arrayOf(user.mention))
+						}
+					}
+				}
 			}
 		}
 
@@ -91,6 +143,13 @@ class SocialRating : Extension() {
 			action {
 				respond { content = "Rollback..." }
 			}
+		}
+	}
+
+	inner class SRBlacklistArgs : Arguments() {
+		val member by optionalMember {
+			name = "member"
+			description = "extensions.srBlacklist.arguments.member"
 		}
 	}
 }

@@ -128,6 +128,51 @@ object Database {
 	}
 
 	/**
+	 * Add user to social blacklist
+	 *
+	 * @param userId User ID
+	 */
+	fun addUserToBlackList(userId: Snowflake) {
+		val longId = userId.value.toLong()
+
+		transaction {
+			val user = User.find { Users.id eq longId }
+				.firstOrNull()
+
+			if (user != null)
+				user.socialBlackList = true
+			else
+				User.new(longId) { socialBlackList = true }
+		}
+	}
+
+	/**
+	 * Remove user from social blacklist
+	 *
+	 * @param userId User ID
+	 */
+	fun removeUserFromBlackList(userId: Snowflake) {
+		val longId = userId.value.toLong()
+
+		transaction {
+			val user = User.find { Users.id eq longId }
+				.firstOrNull()
+
+			if (user != null)
+				user.socialBlackList = false
+			else
+				User.new(longId) { socialBlackList = false }
+		}
+	}
+
+	/**
+	 * Get list of blacklisted users
+	 */
+	fun getBlackListedUsers() = transaction {
+		User.find { Users.socialBlackList eq true }.toList()
+	}
+
+	/**
 	 * Clean up database
 	 */
 	fun cleanUp() {

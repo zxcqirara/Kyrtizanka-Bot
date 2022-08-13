@@ -13,4 +13,5 @@ class User(id: EntityID<Long>) : LongEntity(id) {
 	var specialAccess by Users.specialAccess
 	var useEmoji by Users.useEmoji
 	var socialRating by Users.socialRating
+	var socialBlackList by Users.socialBlackList
 }

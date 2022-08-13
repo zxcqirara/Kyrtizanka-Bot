@@ -9,4 +9,5 @@ object Users : LongIdTable(columnName = "user_id") {
 	val specialAccess = bool("special_access").default(false)
 	val useEmoji = bool("use_emoji").default(true)
 	val socialRating = integer("social_rating").default(10)
+	val socialBlackList = bool("social_black_list").default(false)
 }
