@@ -88,7 +88,7 @@ object Database {
 		}
 	}
 
-	fun removeExperience(
+	/*fun removeExperience(
 		userId: Long,
 		count: Short,
 		moment: Instant
@@ -110,7 +110,7 @@ object Database {
 				time = moment.toJavaInstant()
 			}
 		}
-	}
+	}*/
 
 	/**
 	 * Get user by ID
