@@ -62,7 +62,7 @@ object Database {
 			val multiplied = (if (nowHas.socialRating > 0)
 				count * nowHas.socialRating
 			else
-				count / nowHas.socialRating).toShort()
+				count / -nowHas.socialRating).toShort()
 
 			val newExp = nowHas.experience + multiplied
 
