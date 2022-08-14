@@ -3,6 +3,7 @@ package bot.extensions
 import bot.database.tag.Tag
 import bot.database.tag.Tags
 import com.kotlindiscord.kord.extensions.commands.Arguments
+import com.kotlindiscord.kord.extensions.commands.application.slash.ephemeralSubCommand
 import com.kotlindiscord.kord.extensions.commands.converters.impl.coalescingString
 import com.kotlindiscord.kord.extensions.extensions.*
 import com.kotlindiscord.kord.extensions.types.respond
@@ -47,8 +48,8 @@ class Tags : Extension() {
 		}
 
 		chatCommand(::TagArgs) {
-			name = "extensions.tags.commandName"
-			description = "extensions.tags.commandDescription"
+			name = "extensions.tags.tag.commandName"
+			description = "extensions.tags.tag.commandDescription"
 
 			check {
 				failIfNot(
@@ -68,7 +69,7 @@ class Tags : Extension() {
 				}
 
 				if (isTagExists)
-					return@action run { message.reply { content = translate("extensions.tags.alreadyExists") } }
+					return@action run { message.reply { content = translate("extensions.tags.tag.errors.alreadyExists") } }
 
 				newSuspendedTransaction {
 					Tag.new {
@@ -84,33 +85,38 @@ class Tags : Extension() {
 		}
 
 		ephemeralSlashCommand {
-			name = "extensions.tags.list.commandName"
-			description = "extensions.tags.list.commandDescription"
+			name = "extensions.tags.commandName"
+			description = "extensions.tags.commandDescription"
 
-			action {
-				val list = transaction {
-					Tag.all().toList()
-				}.joinToString("\n") { "#${it.name}" }
-					.takeIf { it.isNotEmpty() } ?: translate("extensions.tags.list.noTags")
+			ephemeralSubCommand {
+				name = "extensions.tags.list.commandName"
+				description = "extensions.tags.list.commandDescription"
 
-				respond { content = list }
+				action {
+					val list = transaction {
+						Tag.all().toList()
+					}.joinToString("\n") { "#${it.name}" }
+						.takeIf { it.isNotEmpty() } ?: translate("extensions.tags.list.errors.noTags")
+
+					respond { content = list }
+				}
 			}
-		}
 
-		ephemeralSlashCommand(::TagArgs) {
-			name = "extensions.tags.remove.commandName"
-			description = "extensions.tags.remove.commandDescription"
+			ephemeralSubCommand(::TagArgs) {
+				name = "extensions.tags.remove.commandName"
+				description = "extensions.tags.remove.commandDescription"
 
-			action {
-				val tag = transaction {
-					Tag.find { Tags.name eq arguments.name }.firstOrNull()
-				} ?: return@action run { respond { content = translate("extensions.tags.remove.invalidTag") } }
+				action {
+					val tag = transaction {
+						Tag.find { Tags.name eq arguments.name }.firstOrNull()
+					} ?: return@action run { respond { content = translate("extensions.tags.remove.errors.invalidTag") } }
 
-				if (tag.addedBy != member!!.id.value.toLong())
-					return@action run { respond { content = translate("extensions.tags.remove.notYourTag") } }
+					if (tag.addedBy != member!!.id.value.toLong())
+						return@action run { respond { content = translate("extensions.tags.remove.errors.notYourTag") } }
 
-				transaction { tag.delete() }
-				respond { content = translate("extensions.tags.remove.success") }
+					transaction { tag.delete() }
+					respond { content = translate("extensions.tags.remove.success") }
+				}
 			}
 		}
 	}
