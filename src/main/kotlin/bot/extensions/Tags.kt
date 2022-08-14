@@ -79,7 +79,6 @@ class Tags : Extension() {
 					}
 				}
 
-//				event.message.reply { content = translate("extensions.tags.success") }
 				event.message.addReaction("✅")
 			}
 		}
