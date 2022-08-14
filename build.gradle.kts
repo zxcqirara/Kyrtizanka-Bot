@@ -12,6 +12,10 @@ plugins {
 val gitVersion: groovy.lang.Closure<String> by extra
 version = gitVersion()
 
+val versionFile = file("src/main/resources/version.txt")
+if (!versionFile.exists()) versionFile.createNewFile()
+versionFile.writeText(version.toString())
+
 repositories {
 	mavenCentral()
 	maven("https://oss.sonatype.org/content/repositories/snapshots")

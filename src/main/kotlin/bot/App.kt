@@ -55,7 +55,8 @@ suspend fun main() {
 		}
 
 		presence {
-			playing(initedConfig.game)
+			val version = javaClass.classLoader.getResource("version.txt")!!.readText()
+			playing("${initedConfig.game} | $version")
 		}
 
 		chatCommands {
