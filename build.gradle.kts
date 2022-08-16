@@ -50,6 +50,8 @@ dependencies {
 
 	implementation("com.sedmelluq:lavaplayer:1.3.77")
 	implementation("com.github.aikaterna:lavaplayer-natives:original-SNAPSHOT")
+
+	implementation("org.knowm.xchart:xchart:3.8.1")
 }
 
 application {

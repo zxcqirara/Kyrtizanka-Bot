@@ -90,6 +90,7 @@ suspend fun main() {
 			add(::SocialRating)
 			add(::Tags)
 			add(::PrivateRooms)
+			add(::Statistic)
 		}
 	}
 
