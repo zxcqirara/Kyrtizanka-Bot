@@ -4,8 +4,8 @@ import bot.database.experience.Experiences
 import bot.database.meme.Memes
 import bot.database.rating.RatingRateLimits
 import bot.database.rep_messages.RepMessages
-import bot.database.user.Users
 import bot.database.tag.Tags
+import bot.database.user.Users
 import bot.extensions.*
 import bot.lib.ConfigFile
 import com.charleskorn.kaml.Yaml
@@ -19,10 +19,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.jetbrains.exposed.sql.Database as KtDatabase
 import java.io.File
 import kotlin.system.exitProcess
 import kotlin.time.ExperimentalTime
+import org.jetbrains.exposed.sql.Database as KtDatabase
 
 @KordVoice
 @ExperimentalTime
@@ -69,10 +69,9 @@ suspend fun main() {
 		}
 
 		extensions {
-			if (initedConfig.sentryLink.isNotEmpty()) {
-				sentry {
+			sentry {
+				if (initedConfig.sentryLink.isNotEmpty())
 					dsn = initedConfig.sentryLink
-				}
 			}
 
 			add(::PingCommand)
