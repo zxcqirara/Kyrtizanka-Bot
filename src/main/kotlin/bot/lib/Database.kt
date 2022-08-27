@@ -208,7 +208,7 @@ object Database {
 		val perSecond = readConfig().experience.perSecond
 
 		transaction {
-			val userUpdate = User.findById(userIdLong)!!
+			val userUpdate = User.findById(userIdLong) ?: User.new {}
 			userUpdate.voiceTime += count
 			userUpdate.experience += (count * perSecond).roundToLong()
 		}
