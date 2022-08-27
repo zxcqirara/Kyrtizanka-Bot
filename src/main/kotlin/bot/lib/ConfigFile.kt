@@ -12,6 +12,7 @@ data class ConfigFile(
 	val memeScore: Int = 10,
 	val game: String = "Stray",
 	val sentryLink: String = "",
+	val timeZone: String = "Europe/Moscow",
 	val experience: Experience = Experience(),
 	val database: ConfigDatabase = ConfigDatabase(),
 	val privates: Privates = Privates()

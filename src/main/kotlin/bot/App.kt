@@ -84,12 +84,12 @@ suspend fun main() {
 			add(::Music)
 			add(::Info)
 			add(::Tuts)
-			add(::StatsReport)
+			add { StatsReport(initedConfig.timeZone) }
 			add(::MemeScore)
 			add(::SocialRating)
 			add(::Tags)
 			add(::PrivateRooms)
-			add(::Statistic)
+			add { Statistic(initedConfig.timeZone) }
 		}
 	}
 

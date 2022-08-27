@@ -1,26 +1,27 @@
 package bot.extensions
 
-import com.kotlindiscord.kord.extensions.extensions.Extension
-import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
-import com.kotlindiscord.kord.extensions.types.respond
-import org.jetbrains.exposed.sql.transactions.transaction
-import org.knowm.xchart.BitmapEncoder.BitmapFormat
-import kotlin.io.path.Path
 import bot.database.experience.Experience
 import bot.lib.ChartGithubTheme
 import com.kotlindiscord.kord.extensions.commands.application.slash.publicSubCommand
+import com.kotlindiscord.kord.extensions.extensions.Extension
+import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
+import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.core.behavior.interaction.followup.edit
 import dev.kord.rest.NamedFile
 import dev.kord.rest.builder.message.modify.embed
-import org.knowm.xchart.*
+import org.jetbrains.exposed.sql.transactions.transaction
+import org.knowm.xchart.BitmapEncoder
+import org.knowm.xchart.BitmapEncoder.BitmapFormat
+import org.knowm.xchart.XYChartBuilder
 import org.knowm.xchart.style.markers.SeriesMarkers
 import java.awt.BasicStroke
 import java.awt.Color
 import java.awt.Font
 import java.io.File
-import java.time.ZoneOffset
+import java.time.ZoneId
+import kotlin.io.path.Path
 
-class Statistic : Extension() {
+class Statistic(private val timeZone: String) : Extension() {
 	override val name = "visual-stats"
 	override val bundle = "cs_dsbot"
 
@@ -42,7 +43,7 @@ class Statistic : Extension() {
 						Experience.all().toList()
 					}
 
-					val data = dbData.groupBy { it.time.atZone(ZoneOffset.UTC).dayOfMonth }
+					val data = dbData.groupBy { it.time.atZone(ZoneId.of(timeZone)).dayOfMonth }
 
 					val xData = data.map { it.key }
 					val yData = data.map { it.value }.map { value -> value.map { it.count }.sum() }

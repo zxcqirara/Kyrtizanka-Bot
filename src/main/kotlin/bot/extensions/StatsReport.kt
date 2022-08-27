@@ -16,14 +16,14 @@ import kotlin.time.Duration.Companion.days
 import kotlin.time.ExperimentalTime
 
 @ExperimentalTime
-class StatsReport : Extension() {
+class StatsReport(private val timeZone: String) : Extension() {
 	override val name = "stats-report"
 	override val bundle = "cs_dsbot"
 
 	private val translationsProvider: TranslationsProvider by inject()
 
 	override suspend fun setup() {
-		val timeOffset = TimeZone.of("Europe/Moscow")
+		val timeOffset = TimeZone.of(timeZone)
 
 		val initMoment = Clock.System.now()
 		val currentTime = initMoment.toLocalDateTime(timeOffset)
