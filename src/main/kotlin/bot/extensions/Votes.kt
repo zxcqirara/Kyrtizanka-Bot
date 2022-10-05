@@ -180,7 +180,11 @@ class Votes : Extension() {
 		fun getStatsString() = buildString {
 			choices.forEach { choice ->
 				appendLine(
-					translationsProvider.translate("extensions.votes.votesInfo", bundle, listOf(choice))
+					translationsProvider.translate(
+						"extensions.votes.votesInfo",
+						bundle,
+						listOf(choice.name, choice.votedUsers.size)
+					)
 				)
 			}
 		}
