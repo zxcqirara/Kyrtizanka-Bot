@@ -153,7 +153,7 @@ class SocialRating : Extension() {
 			check {
 				failIf(
 					!Database.hasSpecialAccess(kord, event.interaction.user.id),
-					translate("extensions.errors.specialAccess", bundle)
+					translate("extensions.errors.specialAccess", this@SocialRating.bundle)
 				)
 
 				val repMessage = Database.getRepMessage(event.interaction.targetId)
