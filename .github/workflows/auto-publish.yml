@@ -31,4 +31,4 @@ jobs:
           automatic_release_tag: ${{ steps.vars.outputs.sha_short }}
           prerelease: false
           title: 'Bot Release ${{ steps.vars.outputs.sha_short }}'
-          files: build/libs/cs_dsbot-${{ steps.vars.outputs.sha_short }}-all.jar
+          files: build/libs/cs_dsbot-*.jar
