@@ -1,0 +1,20 @@
+name: Auto Publish
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Build
+        run: ./gradlew shadowJar
+      - name: Publish Release
+        if: github.ref_name == 'master'
+        uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          automatic_release_tag: ${GITHUB_SHA::7}
+          prerelease: false
+          title: 'CS DsBot ${GITHUB_SHA::7}'
+          files: build/libs/cs_dsbot-${GITHUB_SHA::7}-all.jar
