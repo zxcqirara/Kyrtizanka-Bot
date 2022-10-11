@@ -41,9 +41,15 @@ class Votes : Extension() {
 					.replace(", ", ",")
 					.split(",")
 
+				if (choices.size > 23) {
+					respond { content = translate("extensions.votes.tooManyChoices") }
+					return@action
+				}
+
 				val voteStartTime = Utils.parseTime(Clock.System.now())
 				val vote = Vote(arguments.title, choices.map(::Choice), translatorProvider, this@Votes.bundle)
-				votes.add(vote)
+				votes += vote
+				val voteIndex = votes.indexOf(vote)
 
 				val voteMessage = channel.createMessage {
 					embed {
@@ -121,8 +127,8 @@ class Votes : Extension() {
 					return@action
 				}
 
-				Scheduler().schedule(duration) {
-					val voteEl = votes[votes.indexOf(vote)]
+				vote.task = Scheduler().schedule(duration) {
+					val voteEl = votes[voteIndex]
 
 					voteMessage.edit {
 						embed {
