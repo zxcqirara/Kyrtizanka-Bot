@@ -35,13 +35,13 @@ dependencies {
 	implementation("com.kotlindiscord.kord.extensions:kord-extensions:1.5.5-SNAPSHOT")
 	implementation("com.kotlindiscord.kord.extensions:time4j:1.5.3-SNAPSHOT")
 
-	implementation("io.sentry:sentry:6.3.0")
-	implementation("org.slf4j:slf4j-log4j12:2.0.0-beta0")
+	implementation("io.sentry:sentry:6.4.2")
+	implementation("org.slf4j:slf4j-log4j12:2.0.3")
 
 	implementation(kotlin("scripting-jsr223"))
 	runtimeOnly(kotlin("script-runtime"))
 
-	implementation("com.charleskorn.kaml:kaml:0.46.0")
+	implementation("com.charleskorn.kaml:kaml:0.49.0")
 
 	implementation("org.jetbrains.exposed:exposed-core:${exposedVersion}")
 	implementation("org.jetbrains.exposed:exposed-dao:${exposedVersion}")
@@ -52,7 +52,7 @@ dependencies {
 	implementation("com.sedmelluq:lavaplayer:1.3.77")
 	implementation("com.github.aikaterna:lavaplayer-natives:original-SNAPSHOT")
 
-	implementation("org.knowm.xchart:xchart:3.8.1")
+	implementation("org.knowm.xchart:xchart:3.8.2")
 }
 
 application {
