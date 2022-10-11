@@ -7,6 +7,7 @@ plugins {
 	kotlin("plugin.serialization") version "1.6.20"
 	application
 	id("com.palantir.git-version") version "0.15.0"
+	id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
 val gitVersion: groovy.lang.Closure<String> by extra

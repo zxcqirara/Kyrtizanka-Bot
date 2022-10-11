@@ -34,3 +34,11 @@
 ```bash
 ./gradlew run
 ```
+
+## Building for deploying to prod
+1. Run in console from `cs_dsbot` dir:
+```bash
+./gradlew shadowJar
+```
+2. Find compiled JAR file in the `build/libs`
+3. Run it with `java -jar FILENAME.jar` command
