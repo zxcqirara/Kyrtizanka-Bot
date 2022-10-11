@@ -20,6 +20,7 @@ jobs:
       - name: Set sha var
         id: vars
         run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+      - run: ls build/libs
       - name: Publish Release
         if: github.ref_name == 'master'
         uses: marvinpinto/action-automatic-releases@latest
@@ -27,5 +28,5 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           automatic_release_tag: ${{ steps.vars.outputs.sha_short }}
           prerelease: false
-          title: 'CS DsBot ${{ steps.vars.outputs.sha_short }}'
+          title: 'Bot Release ${{ steps.vars.outputs.sha_short }}'
           files: build/libs/cs_dsbot-${{ steps.vars.outputs.sha_short }}-all.jar
