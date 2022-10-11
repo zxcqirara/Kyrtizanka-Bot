@@ -13,6 +13,8 @@ import com.kotlindiscord.kord.extensions.utils.isNullOrBot
 import dev.kord.common.entity.Permission
 import dev.kord.core.behavior.reply
 import dev.kord.core.event.message.MessageCreateEvent
+import io.ktor.client.request.forms.*
+import io.ktor.utils.io.jvm.javaio.*
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.net.URL
@@ -40,8 +42,9 @@ class Tags : Extension() {
 					tagData.attachments.forEach { imageLink ->
 						val stream = URL(imageLink).openStream()
 						val ext = imageLink.substringAfterLast(".")
+						val provider = ChannelProvider { stream.toByteReadChannel() }
 
-						addFile("${tagData.attachments.indexOf(imageLink)}.$ext", stream)
+						addFile("${tagData.attachments.indexOf(imageLink)}.$ext", provider)
 					}
 				}
 			}
