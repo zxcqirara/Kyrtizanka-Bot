@@ -13,11 +13,13 @@ import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.types.edit
 import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.scheduling.Scheduler
+import com.kotlindiscord.kord.extensions.utils.scheduling.Task
 import dev.kord.common.Color
 import dev.kord.common.entity.ButtonStyle
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.channel.createMessage
 import dev.kord.core.behavior.edit
+import dev.kord.core.behavior.interaction.response.edit
 import dev.kord.rest.builder.message.create.embed
 import dev.kord.rest.builder.message.modify.embed
 import kotlinx.datetime.Clock
@@ -114,6 +116,45 @@ class Votes : Extension() {
 								}
 							}
 						}
+
+						ephemeralButton {
+							bundle = this@Votes.bundle
+
+							style = ButtonStyle.Danger
+							label = translate("extensions.votes.forceEnd")
+
+							action {
+								val actualVote = votes[voteIndex]
+
+								this.interactionResponse.edit {
+									embed {
+										title = translate("extensions.votes.ended.title")
+										description = buildString {
+											appendLine("__${actualVote.title}__")
+
+											actualVote.choices.forEach { choice ->
+												appendLine("**${choice.name}** `${choice.votedUsers.size}`")
+
+												val mentionedUsers = choice.votedUsers.map { guild!!.getMember(it).mention }
+												if (mentionedUsers.isNotEmpty())
+													appendLine(mentionedUsers.joinToString(" "))
+												else
+													appendLine("`${translate("extensions.votes.nobody")}`")
+											}
+										}
+
+										footer {
+											text = translate("extensions.votes.startedAt", arrayOf(voteStartTime)) + "\n" +
+												translate("extensions.votes.endedAt", arrayOf(Utils.parseTime(Clock.System.now())))
+										}
+									}
+
+									components {}
+								}
+
+								respond { content = translate("extensions.votes.forceEnded") }
+							}
+						}
 					}
 				}
 
@@ -181,7 +222,8 @@ class Votes : Extension() {
 		val title: String,
 		val choices: List<Choice>,
 		val translationsProvider: TranslationsProvider,
-		val bundle: String
+		val bundle: String,
+		var task: Task? = null
 	) {
 		fun getStatsString() = buildString {
 			choices.forEach { choice ->
