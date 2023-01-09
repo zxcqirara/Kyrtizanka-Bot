@@ -69,10 +69,10 @@ suspend fun main() {
 		}
 
 		extensions {
-			sentry {
-				if (initedConfig.sentryLink.isNotEmpty())
+			if (initedConfig.sentryLink.isNotEmpty())
+				sentry {
 					dsn = initedConfig.sentryLink
-			}
+				}
 
 			add(::PingCommand)
 			add(::Reminder)
