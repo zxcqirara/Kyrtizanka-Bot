@@ -28,7 +28,7 @@ class PrivateRooms : Extension() {
 		val config = readConfig()
 
 		val rooms = indexRooms(
-			kord.getGuild(Snowflake(config.guildId))!!,
+			kord.getGuildOrThrow(Snowflake(config.guildId)),
 			Snowflake(config.privates.categoryId),
 			Snowflake(config.privates.createChannelId)
 		).toMutableList()
