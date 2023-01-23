@@ -9,10 +9,10 @@
 ## Dependencies
 
 ![Maven metadata URL](https://img.shields.io/maven-metadata/v?label=Kord&metadataUrl=https%3A%2F%2Frepo1.maven.org%2Fmaven2%2Fdev%2Fkord%2Fkord-core%2Fmaven-metadata.xml)
-![Maven metadata URL](https://img.shields.io/maven-metadata/v?label=KordEx&metadataUrl=https%3A%2F%2Fmaven.kotlindiscord.com%2Frepository%2Fmaven-public%2Fcom%2Fkotlindiscord%2Fkord%2Fextensions%2Fkord-extensions%2Fmaven-metadata.xml&versionPrefix=1.5.5&versionSuffix=-SNAPSHOT)
+![Maven metadata URL](https://img.shields.io/maven-metadata/v?label=KordEx&metadataUrl=https%3A%2F%2Fmaven.kotlindiscord.com%2Frepository%2Fmaven-public%2Fcom%2Fkotlindiscord%2Fkord%2Fextensions%2Fkord-extensions%2Fmaven-metadata.xml&versionPrefix=1.5.6&versionSuffix=-SNAPSHOT)
 ![Maven metadata URL](https://img.shields.io/maven-metadata/v?label=Time4J&metadataUrl=https%3A%2F%2Fmaven.kotlindiscord.com%2Frepository%2Fmaven-public%2Fcom%2Fkotlindiscord%2Fkord%2Fextensions%2Ftime4j%2Fmaven-metadata.xml&versionPrefix=1.5.3&versionSuffix=-SNAPSHOT)
-![Maven Central](https://img.shields.io/maven-central/v/io.sentry/sentry?label=Sentry&versionPrefix=6.4.2)
-![Maven Central](https://img.shields.io/maven-central/v/org.slf4j/slf4j-log4j12?label=Log4J&versionPrefix=2.0.3)
+![Maven Central](https://img.shields.io/maven-central/v/io.sentry/sentry?label=Sentry&versionPrefix=6.11.0)
+![Maven Central](https://img.shields.io/maven-central/v/org.slf4j/slf4j-log4j12?label=Log4J&versionPrefix=2.0.5)
 ![Maven Central](https://img.shields.io/maven-central/v/org.jetbrains.kotlin/kotlin-scripting-jsr223?label=Kotlin%20Scripting%20Jsr223)
 ![Maven Central](https://img.shields.io/maven-central/v/org.jetbrains.kotlin/kotlin-script-runtime?label=Kotlin%20Script%20Runtime)
 ![Maven Central](https://img.shields.io/maven-central/v/com.charleskorn.kaml/kaml?label=Kaml&versionPrefix=0.49.0)
@@ -21,7 +21,7 @@
 ![Maven Central](https://img.shields.io/maven-central/v/org.jetbrains.exposed/exposed-jdbc?label=Exposed%20JDBC&versionPrefix=0.39.2)
 ![Maven Central](https://img.shields.io/maven-central/v/org.jetbrains.exposed/exposed-java-time?label=Exposed%20Java%20Time&versionPrefix=0.39.2)
 ![Maven Central](https://img.shields.io/maven-central/v/org.postgresql/postgresql?label=PostgreSQL&versionPrefix=42.3.5)
-![Maven Central](https://img.shields.io/maven-central/v/org.knowm.xchart/xchart?label=XChart&versionPrefix=3.8.2)
+![Maven Central](https://img.shields.io/maven-central/v/org.knowm.xchart/xchart?label=XChart&versionPrefix=3.8.3)
 ![Maven metadata URL](https://img.shields.io/maven-metadata/v?label=LavaPlayer&metadataUrl=https%3A%2F%2Fm2.dv8tion.net%2Freleases%2Fcom%2Fsedmelluq%2Flavaplayer%2Fmaven-metadata.xml&versionPrefix=1.3.77)
 ![JitPack](https://img.shields.io/jitpack/v/github/aikaterna/lavaplayer-natives?label=LavaPlayer%20Natives)
 

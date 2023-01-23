@@ -32,11 +32,11 @@ dependencies {
 			requireCapability("dev.kord:core-voice:0.8.x-SNAPSHOT")
 		}
 	}
-	implementation("com.kotlindiscord.kord.extensions:kord-extensions:1.5.5-SNAPSHOT")
+	implementation("com.kotlindiscord.kord.extensions:kord-extensions:1.5.6-SNAPSHOT")
 	implementation("com.kotlindiscord.kord.extensions:time4j:1.5.3-SNAPSHOT")
 
-	implementation("io.sentry:sentry:6.4.2")
-	implementation("org.slf4j:slf4j-log4j12:2.0.3")
+	implementation("io.sentry:sentry:6.11.0")
+	implementation("org.slf4j:slf4j-log4j12:2.0.5")
 
 	implementation(kotlin("scripting-jsr223"))
 	runtimeOnly(kotlin("script-runtime"))
@@ -52,7 +52,7 @@ dependencies {
 	implementation("com.sedmelluq:lavaplayer:1.3.77")
 	implementation("com.github.aikaterna:lavaplayer-natives:original-SNAPSHOT")
 
-	implementation("org.knowm.xchart:xchart:3.8.2")
+	implementation("org.knowm.xchart:xchart:3.8.3")
 }
 
 application {
