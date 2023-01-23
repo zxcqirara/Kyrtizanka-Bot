@@ -18,10 +18,9 @@ import java.awt.BasicStroke
 import java.awt.Color
 import java.awt.Font
 import java.io.File
-import java.time.ZoneId
 import kotlin.io.path.Path
 
-class Statistic(private val timeZone: String) : Extension() {
+class Statistic : Extension() {
 	override val name = "visual-stats"
 	override val bundle = "cs_dsbot"
 
@@ -43,7 +42,7 @@ class Statistic(private val timeZone: String) : Extension() {
 						Experience.all().toList()
 					}
 
-					val data = dbData.groupBy { it.time.atZone(ZoneId.of(timeZone)).dayOfMonth }
+					val data = dbData.groupBy { it.time.epochSecond }
 
 					val xData = data.map { it.key }
 					val yData = data.map { it.value }.map { value -> value.map { it.count }.sum() }
