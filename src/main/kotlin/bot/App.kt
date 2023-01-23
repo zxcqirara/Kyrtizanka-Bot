@@ -39,7 +39,14 @@ suspend fun main() {
 	)
 
 	transaction {
-		SchemaUtils.create(Users, RatingRateLimits, Experiences, Memes, Tags, RepMessages)
+		SchemaUtils.create(
+			Users,
+			RatingRateLimits,
+			Experiences,
+			Memes,
+			Tags,
+			RepMessages
+		)
 	}
 
 	val bot = ExtensibleBot(initedConfig.token) {
