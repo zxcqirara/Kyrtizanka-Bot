@@ -25,6 +25,10 @@ class StatsReport(private val timeZone: String) : Extension() {
 	override suspend fun setup() {
 		val timeOffset = TimeZone.of(timeZone)
 
+		kordLogger.info(translationsProvider.translate(
+			"extensions.experience.stats.timeZone", bundle, arrayOf(timeOffset.id)
+		))
+
 		val initMoment = Clock.System.now()
 		val currentTime = initMoment.toLocalDateTime(timeOffset)
 
