@@ -22,6 +22,8 @@ data class ConfigFile(
 data class Experience(
 	val perCharacter: Float = .5f,
 	val perSecond: Float = .05f,
+	val deleteTimeout: Float = 3f,
+	val doNotAlertBefore: Int = 0,
 	val ignore: List<Long> = listOf()
 )
 

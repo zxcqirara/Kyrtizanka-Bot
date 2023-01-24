@@ -12,6 +12,7 @@ import com.kotlindiscord.kord.extensions.extensions.event
 import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.types.respond
+import com.kotlindiscord.kord.extensions.utils.delete
 import com.kotlindiscord.kord.extensions.utils.selfMember
 import dev.kord.common.Color
 import dev.kord.common.entity.Snowflake
@@ -84,13 +85,19 @@ class Experience : Extension() {
 					bot, userId, count, event.message.timestamp
 				)
 
-				if (xpEvent.needUpdate) {
-					event.message.channel.createEmbed {
+				if (xpEvent.needUpdate && xpEvent.newLevel >= readConfig().experience.doNotAlertBefore) {
+					val infoMessage = event.message.channel.createEmbed {
 						title = translate("extensions.experience.newLevel")
 						description = translate(
 							"extensions.experience.reachedLevel",
 							arrayOf(event.member!!.mention, xpEvent.newLevel)
 						)
+					}
+
+					readConfig().experience.deleteTimeout.let { timeout ->
+						if (timeout > 0) {
+							infoMessage.delete((timeout * 1000).toLong())
+						}
 					}
 				}
 			}
