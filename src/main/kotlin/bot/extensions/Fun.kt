@@ -40,10 +40,12 @@ class Fun : Extension() {
 			description = "extensions.fun.duel.commandDescription"
 
 			action duelCommand@ {
+				val userName = member!!.asMember().displayName
+
 				if (arguments.member.isBot) {
 					respond {
 						embed {
-							title = translate("extensions.fun.duel.waiting.embed.title", arrayOf(member!!.asMember().nickname))
+							title = translate("extensions.fun.duel.waiting.embed.title", arrayOf(userName))
 							description = translate("extensions.fun.duel.waiting.robots.embed.description")
 						}
 					}
@@ -54,7 +56,7 @@ class Fun : Extension() {
 				if (member == arguments.member) {
 					respond {
 						embed {
-							title = translate("extensions.fun.duel.suicided.embed.title", arrayOf(member!!.asMember().nickname))
+							title = translate("extensions.fun.duel.suicided.embed.title", arrayOf(userName))
 							description = translate("extensions.fun.duel.suicided.embed.description", arrayOf(member!!.mention))
 						}
 					}
@@ -66,7 +68,7 @@ class Fun : Extension() {
 					content = arguments.member.mention
 
 					embed {
-						title = translate("extensions.fun.duel.waiting.embed.title", arrayOf(member!!.asMember().nickname))
+						title = translate("extensions.fun.duel.waiting.embed.title", arrayOf(userName))
 						description = translate(
 							"extensions.fun.duel.waiting.embed.description",
 							arrayOf(arguments.member.mention)
