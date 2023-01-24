@@ -11,6 +11,9 @@ jobs:
         uses: actions/checkout@v2
       - name: Validate Gradle Wrapper
         uses: gradle/wrapper-validation-action@v1.0.4
+      - name: Set sha var
+        id: vars
+        run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
       - run: ls ./
       - name: Set up JDK 18
         uses: actions/setup-java@v1
