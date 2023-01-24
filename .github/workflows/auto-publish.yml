@@ -24,6 +24,9 @@ jobs:
       - name: Build
         run: ./gradlew shadowJar
       - run: ls build/libs
+      - run: git diff
+      - run: git status
+      - run: git log
       - name: Publish Release
         uses: marvinpinto/action-automatic-releases@latest
         with:
