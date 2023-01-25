@@ -21,7 +21,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
 
 class PrivateRooms : Extension() {
-	override val name = "private_rooms"
+	override val name = "private-rooms"
 	override val bundle = "cs_dsbot"
 
 	override suspend fun setup() {
