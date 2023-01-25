@@ -32,4 +32,4 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: build/libs/cs_dsbot-*.jar
-          tag_name: teeest
+          tag_name: ${{ steps.vars.sha_short}}
