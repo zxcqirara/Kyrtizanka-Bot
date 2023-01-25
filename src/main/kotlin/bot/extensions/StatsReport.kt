@@ -1,7 +1,7 @@
 package bot.extensions
 
+import bot.lib.Config
 import bot.lib.Database
-import bot.readConfig
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.utils.scheduling.Scheduler
@@ -54,7 +54,7 @@ class StatsReport(private val timeZone: String) : Extension() {
 			val startTime = Clock.System.now()
 
 			// Get channel from config
-			val channel = kord.getChannelOf<GuildMessageChannel>(Snowflake(readConfig().statsReportChannelId))
+			val channel = kord.getChannelOf<GuildMessageChannel>(Snowflake(Config.discord.statsReportChannelId))
 			if (channel == null) { // Unload if can't resolve channel
 				kordLogger.error("Failed to get channel! Unloading...")
 

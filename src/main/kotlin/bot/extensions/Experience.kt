@@ -1,9 +1,9 @@
 package bot.extensions
 
 import bot.database.user.User
+import bot.lib.Config
 import bot.lib.Database
 import bot.lib.Utils
-import bot.readConfig
 import com.kotlindiscord.kord.extensions.checks.isNotBot
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalMember
@@ -50,7 +50,7 @@ class Experience : Extension() {
 				isNotBot()
 				failIf(event.member?.isBot ?: true)
 
-				val ignored = readConfig().experience.ignore.map(::Snowflake)
+				val ignored = Config.discord.experience.ignore.map(::Snowflake)
 
 				failIf(
 					ignored.contains(event.message.channelId) ||
@@ -59,7 +59,7 @@ class Experience : Extension() {
 
 				failIf(event.message.content == "+rep")
 				failIf(event.message.content == "-rep")
-				readConfig().commandPrefixes.forEach {
+				Config.discord.commandPrefixes.forEach {
 					failIf(event.message.content.startsWith(it))
 				}
 			}
@@ -79,13 +79,13 @@ class Experience : Extension() {
 						RegexOption.MULTILINE
 					), "") // Markdown
 
-				val count = (content.length * readConfig().experience.perCharacter).roundToInt().toShort()
+				val count = (content.length * Config.discord.experience.perCharacter).roundToInt().toShort()
 
 				val xpEvent = Database.addExperience(
 					bot, userId, count, event.message.timestamp
 				)
 
-				if (xpEvent.needUpdate && xpEvent.newLevel >= readConfig().experience.doNotAlertBefore) {
+				if (xpEvent.needUpdate && xpEvent.newLevel >= Config.discord.experience.doNotAlertBefore) {
 					val infoMessage = event.message.channel.createEmbed {
 						title = translate("extensions.experience.newLevel")
 						description = translate(
@@ -94,7 +94,7 @@ class Experience : Extension() {
 						)
 					}
 
-					readConfig().experience.deleteTimeout.let { timeout ->
+					Config.discord.experience.deleteTimeout.let { timeout ->
 						if (timeout > 0) {
 							infoMessage.delete((timeout * 1000).toLong())
 						}

@@ -1,7 +1,7 @@
 package bot.extensions
 
+import bot.lib.Config
 import bot.lib.Database
-import bot.readConfig
 import com.kotlindiscord.kord.extensions.checks.isNotBot
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.event
@@ -19,7 +19,7 @@ class MemeScore : Extension() {
 	override suspend fun setup() {
 		event<ReactionAddEvent> {
 			check {
-				failIf(event.message.channelId != Snowflake(readConfig().memesChannelId))
+				failIf(event.message.channelId != Snowflake(Config.discord.memesChannelId))
 				failIf(event.getUser() == event.message.asMessage().author)
 				isNotBot()
 				failIf(event.emoji.name != "👍")
@@ -35,7 +35,7 @@ class MemeScore : Extension() {
 				if (count <= maxScore) return@action
 
 				val userId = event.userId.value.toLong()
-				val score = readConfig().memeScore * count
+				val score = Config.discord.memeScore * count
 
 				Database.setMemeScore(event.messageId, count)
 
@@ -57,7 +57,7 @@ class MemeScore : Extension() {
 
 		event<MessageCreateEvent> {
 			check {
-				failIf(event.message.channelId != Snowflake(readConfig().memesChannelId))
+				failIf(event.message.channelId != Snowflake(Config.discord.memesChannelId))
 				isNotBot()
 				failIf(event.member?.isBot ?: true)
 			}

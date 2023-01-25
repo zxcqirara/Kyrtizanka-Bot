@@ -1,6 +1,6 @@
 package bot.extensions
 
-import bot.readConfig
+import bot.lib.Config
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.event
 import dev.kord.common.entity.ChannelType
@@ -25,7 +25,7 @@ class PrivateRooms : Extension() {
 	override val bundle = "cs_dsbot"
 
 	override suspend fun setup() {
-		val config = readConfig()
+		val config = Config.discord
 
 		val rooms = indexRooms(
 			kord.getGuildOrThrow(Snowflake(config.guildId)),
@@ -35,7 +35,7 @@ class PrivateRooms : Extension() {
 
 		event<VoiceStateUpdateEvent> {
 			action {
-				if (event.state.channelId == Snowflake(readConfig().privates.createChannelId)) {
+				if (event.state.channelId == Snowflake(Config.discord.privates.createChannelId)) {
 					val member = event.state.getMember()
 					val name = "🔐 ${member.displayName}"
 

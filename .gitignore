@@ -3,5 +3,5 @@
 /build/
 /logs/
 
-config.yml
+config
 /src/main/resources/version.txt

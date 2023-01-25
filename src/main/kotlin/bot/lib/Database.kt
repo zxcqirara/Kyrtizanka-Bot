@@ -8,7 +8,6 @@ import bot.database.rating.RatingRateLimits
 import bot.database.rep_messages.RepMessage
 import bot.database.user.User
 import bot.database.user.Users
-import bot.readConfig
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
@@ -205,7 +204,7 @@ object Database {
 	 */
 	suspend fun addSeconds(userId: Snowflake, count: Long) {
 		val userIdLong = userId.value.toLong()
-		val perSecond = readConfig().experience.perSecond
+		val perSecond = Config.discord.experience.perSecond
 
 		transaction {
 			val userUpdate = User.findById(userIdLong) ?: User.new {}
