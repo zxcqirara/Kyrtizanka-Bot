@@ -202,7 +202,7 @@ object Database {
 	 * @param userId User ID
 	 * @param count Count of seconds will be added
 	 */
-	suspend fun addSeconds(userId: Snowflake, count: Long) {
+	fun addSeconds(userId: Snowflake, count: Long) {
 		val userIdLong = userId.value.toLong()
 		val perSecond = Config.discord.experience.perSecond
 
