@@ -15,7 +15,7 @@
 ![Maven Central](https://img.shields.io/maven-central/v/org.slf4j/slf4j-log4j12?label=Log4J&versionPrefix=2.0.5)
 ![Maven Central](https://img.shields.io/maven-central/v/org.jetbrains.kotlin/kotlin-scripting-jsr223?label=Kotlin%20Scripting%20Jsr223)
 ![Maven Central](https://img.shields.io/maven-central/v/org.jetbrains.kotlin/kotlin-script-runtime?label=Kotlin%20Script%20Runtime)
-![Maven Central](https://img.shields.io/maven-central/v/com.charleskorn.kaml/kaml?label=Kaml&versionPrefix=0.49.0)
+![Maven Central](https://img.shields.io/maven-central/v/io.github.config4k/config4k?label=Config4K&versionPrefix=0.5.0)
 ![Maven Central](https://img.shields.io/maven-central/v/org.jetbrains.exposed/exposed-core?label=Exposed%20Core&versionPrefix=0.39.2)
 ![Maven Central](https://img.shields.io/maven-central/v/org.jetbrains.exposed/exposed-dao?label=Exposed%20DAO&versionPrefix=0.39.2)
 ![Maven Central](https://img.shields.io/maven-central/v/org.jetbrains.exposed/exposed-jdbc?label=Exposed%20JDBC&versionPrefix=0.39.2)

@@ -1,5 +1,6 @@
 package bot.extensions
 
+import bot.lib.Config
 import bot.lib.Database
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.application.slash.ephemeralSubCommand
@@ -33,6 +34,9 @@ class KoinManage : Extension() {
 				action {
 					bot.loadExtension(arguments.name)
 
+					Config.disabledExtensions -= arguments.name
+					Config.dumpDisabledExtensions()
+
 					respond { content = translate("extensions.koin.load.text", arrayOf(arguments.name)) }
 				}
 			}
@@ -43,6 +47,9 @@ class KoinManage : Extension() {
 
 				action {
 					bot.unloadExtension(arguments.name)
+
+					Config.disabledExtensions += arguments.name
+					Config.dumpDisabledExtensions()
 
 					respond { content = translate("extensions.koin.unload.text", arrayOf(arguments.name)) }
 				}

@@ -7,19 +7,21 @@ import bot.database.rep_messages.RepMessages
 import bot.database.tag.Tags
 import bot.database.user.Users
 import bot.extensions.*
-import bot.lib.ConfigFile
-import com.charleskorn.kaml.Yaml
+import bot.lib.Config
+import bot.lib.ConfigDto
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.i18n.SupportedLocales
+import com.typesafe.config.ConfigRenderOptions
 import dev.kord.common.annotation.KordVoice
+import dev.kord.core.kordLogger
 import dev.kord.gateway.Intent
 import dev.kord.gateway.Intents
 import dev.kord.gateway.PrivilegedIntent
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import io.github.config4k.toConfig
+import okio.FileSystem
+import okio.Path.Companion.toPath
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
-import java.io.File
 import kotlin.system.exitProcess
 import kotlin.time.ExperimentalTime
 import org.jetbrains.exposed.sql.Database as KtDatabase
@@ -28,13 +30,42 @@ import org.jetbrains.exposed.sql.Database as KtDatabase
 @ExperimentalTime
 @PrivilegedIntent
 suspend fun main() {
-	val initedConfig = readConfig()
-	val dbData = initedConfig.database
+	val configPath = Config.path.toPath()
+
+	if (!FileSystem.SYSTEM.exists(configPath)) {
+		kordLogger.warn("Config not found, creating...")
+
+		val renderOptions = ConfigRenderOptions.defaults()
+			.setJson(false)
+			.setOriginComments(false)
+
+		FileSystem.SYSTEM.write(configPath, true) {
+			writeUtf8(
+				ConfigDto.Discord().toConfig("discord")
+					.root().render(renderOptions)
+			)
+
+			writeUtf8("\n")
+
+			writeUtf8(
+				ConfigDto.Database().toConfig("database")
+					.root().render(renderOptions)
+			)
+		}
+
+		kordLogger.warn("Configure the config!")
+		exitProcess(1)
+	}
+
+	Config.update()
+
+	val discordConfig = Config.discord
+	val dbConfig = Config.database
 
 	KtDatabase.connect(
-		url = "jdbc:pgsql://${dbData.url}/${dbData.database}",
-		user = dbData.username,
-		password = dbData.password,
+		url = "jdbc:pgsql://${dbConfig.url}/${dbConfig.database}",
+		user = dbConfig.username,
+		password = dbConfig.password,
 		driver = "com.impossibl.postgres.jdbc.PGDriver"
 	)
 
@@ -49,7 +80,7 @@ suspend fun main() {
 		)
 	}
 
-	val bot = ExtensibleBot(initedConfig.token) {
+	val bot = ExtensibleBot(discordConfig.token) {
 		intents {
 			+ Intents.nonPrivileged
 			+ Intent.MessageContent
@@ -63,7 +94,7 @@ suspend fun main() {
 
 		presence {
 			val version = javaClass.classLoader.getResource("version.txt")!!.readText()
-			playing("${initedConfig.game} | $version")
+			playing("${discordConfig.game} | $version")
 		}
 
 		chatCommands {
@@ -72,13 +103,13 @@ suspend fun main() {
 		}
 
 		applicationCommands {
-			defaultGuild(initedConfig.guildId)
+			defaultGuild(discordConfig.guildId)
 		}
 
 		extensions {
-			if (initedConfig.sentryLink.isNotEmpty())
+			if (discordConfig.sentryLink.isNotEmpty())
 				sentry {
-					dsn = initedConfig.sentryLink
+					dsn = discordConfig.sentryLink
 				}
 
 			add(::PingCommand)
@@ -91,42 +122,20 @@ suspend fun main() {
 			add(::Music)
 			add(::Info)
 			add(::Tuts)
-			add { StatsReport(initedConfig.timeZone) }
+			add { StatsReport(discordConfig.timeZone) }
 			add(::MemeScore)
 			add(::SocialRating)
 			add(::Tags)
 			add(::PrivateRooms)
 			add(::Statistic)
+			add(::ReloadExtension)
 		}
+	}
+
+	Config.loadDisabledExtensions()
+	Config.disabledExtensions.forEach { extensionName ->
+		bot.unloadExtension(extensionName)
 	}
 
 	bot.start()
-}
-
-suspend fun readConfig(): ConfigFile {
-
-	val configFile = withContext(Dispatchers.IO) {
-		val file = File("config.yml")
-
-		if (!file.exists()) {
-			Yaml.default.encodeToStream(ConfigFile.serializer(), ConfigFile(), file.outputStream())
-
-			println("Config created, configure please!")
-			exitProcess(0)
-		}
-
-		return@withContext file
-	}
-
-	val readedConfig = runCatching {
-		Yaml.default.decodeFromStream(ConfigFile.serializer(), configFile.inputStream())
-	}
-		.onFailure {
-			println("Can't read config! Delete config file & restart the program!")
-
-			exitProcess(1)
-		}
-		.getOrThrow()
-
-	return readedConfig
 }

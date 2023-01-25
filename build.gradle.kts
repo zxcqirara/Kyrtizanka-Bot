@@ -41,7 +41,8 @@ dependencies {
 	implementation(kotlin("scripting-jsr223"))
 	runtimeOnly(kotlin("script-runtime"))
 
-	implementation("com.charleskorn.kaml:kaml:0.49.0")
+	implementation("io.github.config4k:config4k:0.5.0")
+	implementation("com.squareup.okio:okio:3.3.0")
 
 	implementation("org.jetbrains.exposed:exposed-core:${exposedVersion}")
 	implementation("org.jetbrains.exposed:exposed-dao:${exposedVersion}")
