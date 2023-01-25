@@ -20,6 +20,7 @@ jobs:
       - name: Set up JDK 18
         uses: actions/setup-java@v3
         with:
+          distribution: coretto
           java-version: 18
 
       - name: Lmao
