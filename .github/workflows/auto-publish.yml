@@ -13,7 +13,7 @@ jobs:
       - name: Validate Gradle Wrapper
         uses: gradle/wrapper-validation-action@v1.0.4
 
-      - name: Set sha var
+      - name: Set SHA var
         id: vars
         run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
 
@@ -33,4 +33,5 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: build/libs/cs_dsbot-*.jar
-          tag_name: ${{ steps.vars.outputs.sha_short}}
+          name: Bot Release ${{steps.vars.outputs.sha_short}}
+          tag_name: ${{steps.vars.outputs.sha_short}}
