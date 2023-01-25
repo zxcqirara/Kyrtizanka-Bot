@@ -103,7 +103,7 @@ class Experience : Extension() {
 			}
 		}
 
-		suspend fun removeMember(member: Member) {
+		fun removeMember(member: Member) {
 			val seconds = (Clock.System.now() - (joinedMembers[member] ?: return))
 				.toLong(DurationUnit.SECONDS)
 
