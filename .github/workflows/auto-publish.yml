@@ -18,7 +18,7 @@ jobs:
         run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
 
       - name: Set up JDK 18
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
           java-version: 18
 
@@ -32,4 +32,4 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: build/libs/cs_dsbot-*.jar
-          tag_name: ${{ steps.vars.sha_short}}
+          tag_name: ${{ steps.vars.outputs.sha_short}}
