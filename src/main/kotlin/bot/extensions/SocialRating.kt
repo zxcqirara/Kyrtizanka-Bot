@@ -56,8 +56,7 @@ class SocialRating : Extension() {
 
 			action {
 				val fromId = event.message.author?.id ?: return@action
-				val to = event.message.referencedMessage!!.author ?: return@action
-				if (to.isBot) return@action
+				val to = event.message.referencedMessage!!.author.takeUnless { it?.isBot ?: true } ?: return@action
 				val toId = to.id
 
 				val isPlusRep = when (event.message.content) {
