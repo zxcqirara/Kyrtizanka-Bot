@@ -372,7 +372,9 @@ object Database {
 
 		(RatingRateLimit.find {
 			(RatingRateLimits.from eq fromId) and (RatingRateLimits.to eq toId)
-		}.firstOrNull() ?: RatingRateLimit.find { RatingRateLimits.from eq fromId }.firstOrNull()) != null
+		}.firstOrNull() ?: RatingRateLimit.find {
+			(RatingRateLimits.from eq fromId) and RatingRateLimits.to.isNull()
+		}.firstOrNull()) != null
 	}
 
 	/**
