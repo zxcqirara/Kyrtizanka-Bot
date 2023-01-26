@@ -60,13 +60,11 @@ class KoinManage : Extension() {
 				description = "extensions.koin.list.commandDescription"
 
 				action {
-					println(bot.extensions)
-
-					val exts = bot.extensions
+					val extensions = bot.extensions
 						.map { (if (it.value.loaded) "+" else "-") + " ${it.key}" }
 						.joinToString("\n")
 
-					respond { content = translate("extensions.koin.list.text", arrayOf(exts)) }
+					respond { content = translate("extensions.koin.list.text", arrayOf(extensions)) }
 				}
 			}
 		}
