@@ -122,7 +122,7 @@ suspend fun main() {
 			add(::Music)
 			add(::Info)
 			add(::Tuts)
-			add { StatsReport(discordConfig.timeZone) }
+			add(::StatsReport)
 			add(::MemeScore)
 			add(::SocialRating)
 			add(::Tags)

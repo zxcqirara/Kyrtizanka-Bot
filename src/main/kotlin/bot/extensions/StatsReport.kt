@@ -16,26 +16,26 @@ import kotlin.time.Duration.Companion.days
 import kotlin.time.ExperimentalTime
 
 @ExperimentalTime
-class StatsReport(private val timeZone: String) : Extension() {
+class StatsReport : Extension() {
 	override val name = "stats-report"
 	override val bundle = "cs_dsbot"
 
 	private val translationsProvider: TranslationsProvider by inject()
 
 	override suspend fun setup() {
-		val timeOffset = TimeZone.of(timeZone)
+		val timeZone = TimeZone.of(Config.discord.timeZone)
 
 		kordLogger.info(translationsProvider.translate(
-			"extensions.experience.stats.timeZone", bundle, arrayOf(timeOffset.id)
+			"extensions.experience.stats.timeZone", bundle, arrayOf(timeZone.id)
 		))
 
 		val initMoment = Clock.System.now()
-		val currentTime = initMoment.toLocalDateTime(timeOffset)
+		val currentTime = initMoment.toLocalDateTime(timeZone)
 
 		val initPublishTime = LocalDateTime(
 			currentTime.year,	currentTime.month + 1, 1,
 			0, 0
-		).toInstant(timeOffset)
+		).toInstant(timeZone)
 
 		val initialDelay = initPublishTime - initMoment
 

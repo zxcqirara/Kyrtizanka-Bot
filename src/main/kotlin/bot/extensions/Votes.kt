@@ -158,7 +158,7 @@ class Votes : Extension() {
 					}
 				}
 
-				val duration = Utils.parseDuration(arguments.duration)
+				val duration = Utils.parseToDuration(arguments.duration)
 				if (duration == null || duration.isNegative() || duration == Duration.ZERO) {
 					respond { embed {
 						title = translate("extensions.errors.unknownDurationFormat")

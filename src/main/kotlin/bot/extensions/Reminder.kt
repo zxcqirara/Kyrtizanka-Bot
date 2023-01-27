@@ -39,7 +39,7 @@ class Reminder : Extension() {
 
 				action {
 					val text = arguments.text
-					val duration = Utils.parseDuration(arguments.duration)
+					val duration = Utils.parseToDuration(arguments.duration)
 
 					if (duration == null || duration.isNegative() || duration == ZERO) {
 						respond { embed {

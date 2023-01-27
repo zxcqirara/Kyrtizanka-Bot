@@ -1,6 +1,9 @@
 package bot.lib
 
-import kotlinx.datetime.*
+import kotlinx.datetime.Instant
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toJavaLocalDateTime
+import kotlinx.datetime.toLocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.regex.Pattern
@@ -12,7 +15,7 @@ import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
 object Utils {
-	fun parseDuration(text: String): Duration? {
+	fun parseToDuration(text: String): Duration? {
 		val regex = "^((\\d+)y)?((\\d+)M)?((\\d+)w)?((\\d+)d)?((\\d+)h)?((\\d+)m)?((\\d+)s)?$"
 		val pattern = Pattern.compile(regex, Pattern.MULTILINE)
 		val matcher = pattern.matcher(text)

@@ -10,11 +10,15 @@ import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.ephemeralSlashCommand
 import com.kotlindiscord.kord.extensions.extensions.event
 import com.kotlindiscord.kord.extensions.extensions.publicMessageCommand
+import com.kotlindiscord.kord.extensions.time.TimestampType
+import com.kotlindiscord.kord.extensions.time.toDiscord
 import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.addReaction
+import com.kotlindiscord.kord.extensions.utils.delete
 import com.kotlindiscord.kord.extensions.utils.deleteOwnReaction
 import dev.kord.common.entity.ButtonStyle
 import dev.kord.common.entity.Snowflake
+import dev.kord.core.behavior.reply
 import dev.kord.core.event.gateway.ReadyEvent
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.rest.builder.message.create.embed
@@ -34,7 +38,7 @@ class SocialRating : Extension() {
 	private fun rateLimit(from: Snowflake, to: Snowflake) {
 		val now = Clock.System.now()
 
-		if (!Database.hasGlobalRateLimit(from)) {
+		if (Database.getGlobalRateLimit(from).isEmpty()) {
 			val localRateLimitTime = now + 12.hours
 			val localRateLimitRowId = Database.addRateLimit(from, to, localRateLimitTime)
 			rateLimitsCache[localRateLimitRowId] = localRateLimitTime
@@ -65,8 +69,19 @@ class SocialRating : Extension() {
 					else -> return@action
 				}
 
-				if (Database.hasRateLimit(fromId, toId))
-					return@action event.message.addReaction("🕒")
+				val rateLimit = Database.getRateLimit(fromId, toId)
+
+				if (rateLimit != null) {
+					event.message.reply {
+						content = translate(
+							"extensions.socialRating.remainingTime",
+							arrayOf(rateLimit.expire.toDiscord(TimestampType.RelativeTime))
+						)
+					}.delete(30_000)
+
+					event.message.addReaction("🕒")
+					return@action
+				}
 
 				if (
 					Database.getUser(fromId).socialBlackList ||

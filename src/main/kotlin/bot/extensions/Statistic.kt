@@ -2,6 +2,7 @@ package bot.extensions
 
 import bot.database.experience.Experience
 import bot.lib.ChartGithubTheme
+import bot.lib.Config
 import com.kotlindiscord.kord.extensions.commands.application.slash.publicSubCommand
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
@@ -9,6 +10,8 @@ import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.core.behavior.interaction.followup.edit
 import dev.kord.rest.NamedFile
 import dev.kord.rest.builder.message.modify.embed
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.knowm.xchart.BitmapEncoder
 import org.knowm.xchart.BitmapEncoder.BitmapFormat
@@ -25,6 +28,8 @@ class Statistic : Extension() {
 	override val bundle = "cs_dsbot"
 
 	override suspend fun setup() {
+		val timeZone = TimeZone.of(Config.discord.timeZone)
+
 		publicSlashCommand {
 			name = "extensions.statistic.commandName"
 			description = "extensions.statistic.commandDescription"
@@ -39,17 +44,17 @@ class Statistic : Extension() {
 					val red = Color(0xF03E3E)
 
 					val dbData = transaction {
-						Experience.all().toList()
+						Experience.all().sortedBy { it.time }.toList()
 					}
 
-					val data = dbData.groupBy { it.time.epochSeconds }
+					val data = dbData.groupBy { it.time.toLocalDateTime(timeZone).dayOfYear }
 
 					val xData = data.map { it.key }
 					val yData = data.map { it.value }.map { value -> value.map { it.count }.sum() }
 
 					val chart = XYChartBuilder()
 						.xAxisTitle("День месяца")
-						.yAxisTitle("Кол-во　опыта")
+						.yAxisTitle("Кол-во опыта")
 						.width(400)
 						.height(225)
 						.build()
@@ -87,7 +92,7 @@ class Statistic : Extension() {
 						markerSeries.lineColor = gray
 						markerSeries.lineStyle = BasicStroke(1f)
 
-
+						println("$yCurrent > $yNext")
 						if (yNext > yCurrent) {
 							markerSeries.marker = SeriesMarkers.TRIANGLE_UP
 							markerSeries.markerColor = green
