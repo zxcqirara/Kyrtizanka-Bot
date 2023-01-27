@@ -19,7 +19,7 @@
 ![Maven Central](https://img.shields.io/maven-central/v/org.jetbrains.exposed/exposed-core?label=Exposed%20Core&versionPrefix=0.39.2)
 ![Maven Central](https://img.shields.io/maven-central/v/org.jetbrains.exposed/exposed-dao?label=Exposed%20DAO&versionPrefix=0.39.2)
 ![Maven Central](https://img.shields.io/maven-central/v/org.jetbrains.exposed/exposed-jdbc?label=Exposed%20JDBC&versionPrefix=0.39.2)
-![Maven Central](https://img.shields.io/maven-central/v/org.jetbrains.exposed/exposed-java-time?label=Exposed%20Java%20Time&versionPrefix=0.39.2)
+![Maven Central](https://img.shields.io/maven-central/v/org.jetbrains.exposed/exposed-kotlin-datetime?label=Exposed%20Kotlin%20DateTime&versionPrefix=0.39.2)
 ![Maven Central](https://img.shields.io/maven-central/v/org.postgresql/postgresql?label=PostgreSQL&versionPrefix=42.3.5)
 ![Maven Central](https://img.shields.io/maven-central/v/org.knowm.xchart/xchart?label=XChart&versionPrefix=3.8.3)
 ![Maven metadata URL](https://img.shields.io/maven-metadata/v?label=LavaPlayer&metadataUrl=https%3A%2F%2Fm2.dv8tion.net%2Freleases%2Fcom%2Fsedmelluq%2Flavaplayer%2Fmaven-metadata.xml&versionPrefix=1.3.77)

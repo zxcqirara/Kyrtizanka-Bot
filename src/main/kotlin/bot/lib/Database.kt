@@ -12,8 +12,10 @@ import com.kotlindiscord.kord.extensions.ExtensibleBot
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
 import dev.kord.core.entity.Message
+import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
-import kotlinx.datetime.toJavaInstant
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.deleteAll
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
@@ -54,7 +56,7 @@ object Database {
 				Experience.new {
 					this.userId = userId
 					this.count = count
-					time = moment.toJavaInstant()
+					time = moment
 				}
 			}
 
@@ -80,7 +82,7 @@ object Database {
 				Experience.new {
 					this.userId = userId
 					this.count = count
-					time = moment.toJavaInstant()
+					time = moment
 					multiplier = nowHas.socialRating / 10f
 				}
 			}
@@ -330,7 +332,7 @@ object Database {
 			val action = RatingRateLimit.new {
 				this.from = fromId
 				this.to = toId
-				this.expire = expireTime.toJavaInstant()
+				this.expire = expireTime
 			}
 
 			return@transaction action.id.value
@@ -370,11 +372,22 @@ object Database {
 		val fromId = from.value.toLong()
 		val toId = to.value.toLong()
 
-		(RatingRateLimit.find {
+
+		val row = RatingRateLimit.find {
 			(RatingRateLimits.from eq fromId) and (RatingRateLimits.to eq toId)
-		}.firstOrNull() ?: RatingRateLimit.find {
-			(RatingRateLimits.from eq fromId) and RatingRateLimits.to.isNull()
-		}.firstOrNull()) != null
+		}.firstOrNull()
+
+		RatingRateLimit.find { (RatingRateLimits.from eq fromId) }
+			.forEach {
+				val now = Clock.System.now()
+				val exp = it.expire
+
+				println(now.toLocalDateTime(TimeZone.of("Europe/Moscow")))
+				print("${it.from} | ${exp.toLocalDateTime(TimeZone.of("Europe/Moscow"))}")
+				println("  (${exp - now} remaining)")
+			}
+
+		return@transaction row != null
 	}
 
 	/**

@@ -47,7 +47,7 @@ dependencies {
 	implementation("org.jetbrains.exposed:exposed-core:${exposedVersion}")
 	implementation("org.jetbrains.exposed:exposed-dao:${exposedVersion}")
 	implementation("org.jetbrains.exposed:exposed-jdbc:${exposedVersion}")
-	implementation("org.jetbrains.exposed:exposed-java-time:${exposedVersion}")
+	implementation("org.jetbrains.exposed:exposed-kotlin-datetime:${exposedVersion}")
 	implementation("com.impossibl.pgjdbc-ng", "pgjdbc-ng", "0.8.3")
 
 	implementation("com.sedmelluq:lavaplayer:1.3.77")

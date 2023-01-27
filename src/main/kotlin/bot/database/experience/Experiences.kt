@@ -1,8 +1,7 @@
 package bot.database.experience
 
 import org.jetbrains.exposed.dao.id.LongIdTable
-import org.jetbrains.exposed.sql.javatime.timestamp
-import java.time.Instant
+import org.jetbrains.exposed.sql.kotlin.datetime.timestamp
 
 object Experiences : LongIdTable() {
 	val userId = long("user_id")

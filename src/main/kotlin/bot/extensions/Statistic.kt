@@ -42,7 +42,7 @@ class Statistic : Extension() {
 						Experience.all().toList()
 					}
 
-					val data = dbData.groupBy { it.time.epochSecond }
+					val data = dbData.groupBy { it.time.epochSeconds }
 
 					val xData = data.map { it.key }
 					val yData = data.map { it.value }.map { value -> value.map { it.count }.sum() }
