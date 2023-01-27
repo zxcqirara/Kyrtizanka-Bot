@@ -97,6 +97,8 @@ class Fun : Extension() {
 
 									components { }
 								}
+
+								timeoutTask?.cancel()
 							}
 						}
 
@@ -120,6 +122,8 @@ class Fun : Extension() {
 
 									components { }
 								}
+
+								timeoutTask?.cancel()
 							}
 						}
 
