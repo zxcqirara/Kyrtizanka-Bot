@@ -4,4 +4,5 @@
 /logs/
 
 config
+disabled.txt
 /src/main/resources/version.txt
