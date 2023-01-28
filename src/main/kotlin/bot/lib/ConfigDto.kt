@@ -14,6 +14,7 @@ object ConfigDto {
 		val game: String = "Stray",
 		val sentryLink: String = "",
 		val timeZone: String = "Europe/Moscow",
+		val language: String = "ru",
 		val experience: Experience = Experience(),
 		val privates: Privates = Privates()
 	)

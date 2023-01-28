@@ -59,7 +59,6 @@ suspend fun main() {
 
 	Config.update()
 
-	val discordConfig = Config.discord
 	val dbConfig = Config.database
 
 	KtDatabase.connect(
@@ -80,6 +79,7 @@ suspend fun main() {
 		)
 	}
 
+	val discordConfig = Config.discord
 	val bot = ExtensibleBot(discordConfig.token) {
 		intents {
 			+ Intents.nonPrivileged
@@ -87,7 +87,7 @@ suspend fun main() {
 		}
 
 		i18n {
-			defaultLocale = SupportedLocales.RUSSIAN
+			defaultLocale = SupportedLocales.ALL_LOCALES[discordConfig.language] ?: SupportedLocales.ENGLISH
 
 			interactionUserLocaleResolver()
 		}
