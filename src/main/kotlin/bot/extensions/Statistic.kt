@@ -13,9 +13,7 @@ import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.types.respond
-import dev.kord.core.behavior.interaction.followup.edit
-import dev.kord.rest.NamedFile
-import dev.kord.rest.builder.message.modify.embed
+import dev.kord.rest.builder.message.create.embed
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -90,8 +88,8 @@ class Statistic : Extension() {
 		val yData = data.map { it.value }.map { value -> value.map { it.count }.sum() }
 
 		val chart = XYChartBuilder()
-			.xAxisTitle(translationsProvider.translate("extensions.statistic.embed.image.dayOfMonth"))
-			.yAxisTitle(translationsProvider.translate("extensions.statistic.embed.image.experienceCount"))
+			.xAxisTitle(translationsProvider.translate("extensions.statistic.embed.image.dayOfMonth", bundleName = bundle))
+			.yAxisTitle(translationsProvider.translate("extensions.statistic.embed.image.experienceCount", bundleName = bundle))
 			.width(400)
 			.height(225)
 			.build()
@@ -129,7 +127,6 @@ class Statistic : Extension() {
 			markerSeries.lineColor = gray
 			markerSeries.lineStyle = BasicStroke(1f)
 
-			println("$yCurrent > $yNext")
 			if (yNext > yCurrent) {
 				markerSeries.marker = SeriesMarkers.TRIANGLE_UP
 				markerSeries.markerColor = green
@@ -143,22 +140,21 @@ class Statistic : Extension() {
 			}
 		}
 
-		val path = "${context.event.interaction.id.value}.png"
+		val fileName = "${context.event.interaction.id.value}.png"
 
-		BitmapEncoder.saveBitmapWithDPI(chart, path, BitmapFormat.PNG, 300)
+		BitmapEncoder.saveBitmapWithDPI(chart, fileName, BitmapFormat.PNG, 300)
 
-		lateinit var chartFile: NamedFile
-		val message = context.respond { chartFile = addFile(Path(path)) }
+		context.respond {
+			val file = addFile(Path(fileName))
 
-		File(path).delete()
-
-		message.edit {
 			embed {
-				title = translationsProvider.translate("extensions.statistic.embed.title")
+				title = translationsProvider.translate("extensions.statistic.embed.title", bundleName = bundle)
 
-				image = chartFile.url
+				image = file.url
 			}
 		}
+
+		File(fileName).delete()
 	}
 
 	inner class TargetArgs : Arguments() {
