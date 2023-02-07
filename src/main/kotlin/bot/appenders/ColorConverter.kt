@@ -5,7 +5,7 @@ import ch.qos.logback.classic.pattern.color.HighlightingCompositeConverter
 import ch.qos.logback.classic.spi.ILoggingEvent
 
 class ColorConverter : HighlightingCompositeConverter() {
-	override fun convert(event: ILoggingEvent): String? {
+	override fun convert(event: ILoggingEvent): String {
 		val code = when (event.level.toInt()) {
 			Level.ERROR_INT -> "31mE"
 			Level.WARN_INT -> "33mW"
