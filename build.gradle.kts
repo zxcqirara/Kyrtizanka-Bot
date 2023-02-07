@@ -36,7 +36,7 @@ dependencies {
 	implementation("com.kotlindiscord.kord.extensions:time4j:1.5.3-SNAPSHOT")
 
 	implementation("io.sentry:sentry:6.11.0")
-	implementation("org.slf4j:slf4j-log4j12:2.0.5")
+	implementation("ch.qos.logback:logback-classic:1.3.5")
 
 	implementation(kotlin("scripting-jsr223"))
 	runtimeOnly(kotlin("script-runtime"))

@@ -1,0 +1,27 @@
+<configuration>
+	<conversionRule conversionWord="colored_level" converterClass="bot.appenders.ColorConverter"/>
+
+	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%date{yyyy/MM/dd hh:mm:ss.S} |%colored_level| %-36logger %message%n</pattern>
+		</encoder>
+
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>INFO</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+	</appender>
+
+	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
+		<file>logs/bot.log</file>
+		<encoder>
+			<pattern>%date{yyyy/MM/dd hh:mm:ss.S} [%level] %-36logger %message%n</pattern>
+		</encoder>
+	</appender>
+
+	<root level="DEBUG">
+		<appender-ref ref="CONSOLE"/>
+		<appender-ref ref="FILE"/>
+	</root>
+</configuration>
