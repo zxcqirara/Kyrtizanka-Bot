@@ -246,7 +246,7 @@ class Experience : Extension() {
 	inner class RankArgs : Arguments() {
 		val target by optionalMember {
 			name = "target"
-			description = translationsProvider.translate("extensions.experience.arguments.target")
+			description = "extensions.experience.arguments.target"
 		}
 	}
 

@@ -26,7 +26,7 @@ object Database {
 	 * @param bot Bot object
 	 * @param userId User ID
 	 * @param count XP count
-	 * @param moment Time moment that xp will added
+	 * @param moment Time moment that xp will add
 	 *
 	 * @return Event, that can give you more info
 	 */
@@ -213,7 +213,7 @@ object Database {
 	}
 
 	/**
-	 * Check have user special accesss
+	 * Check have user special access
 	 *
 	 * @param kord Kord instance (need for check)
 	 * @param userId User ID

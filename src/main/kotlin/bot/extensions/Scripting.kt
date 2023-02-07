@@ -10,18 +10,15 @@ import com.kotlindiscord.kord.extensions.commands.converters.impl.user
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.chatCommand
 import com.kotlindiscord.kord.extensions.extensions.chatGroupCommand
-import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import dev.kord.common.Color
 import dev.kord.core.behavior.reply
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.rest.builder.message.create.embed
-import org.koin.core.component.inject
 import javax.script.ScriptEngineManager
 
 class Scripting : Extension() {
 	override val name = "scripting"
 	override val bundle = "cs_dsbot"
-	private val translationsProvider: TranslationsProvider by inject()
 
 	override suspend fun setup() {
 		suspend fun evalCmd(chatCommandContext: ChatCommandContext<out FastrunArgs>) {
@@ -90,7 +87,7 @@ class Scripting : Extension() {
 
 						message.reply { embed {
 							title = translate("extensions.scripting.allowed.add.embed.title")
-							description = translate("extensions.scripting.allowed.add.embed.description", )
+							description = translate("extensions.scripting.allowed.add.embed.description")
 							color = Color(0x0000CC)
 						} }
 					}
@@ -148,20 +145,20 @@ class Scripting : Extension() {
 	inner class FastrunArgs : Arguments() {
 		val script by coalescingString {
 			name = "script"
-			description = translationsProvider.translate("extensions.scripting.fastrun.arguments.script")
+			description = "extensions.scripting.fastrun.arguments.script"
 		}
 	}
 
 	inner class AllowedAddArgs : Arguments() {
 		val user by user {
 			name = "user"
-			description = translationsProvider.translate("extensions.scripting.allowed.add.arguments.user")
+			description = "extensions.scripting.allowed.add.arguments.user"
 		}
 	}
 	inner class AllowedRemoveArgs : Arguments() {
 		val user by user {
 			name = "user"
-			description = translationsProvider.translate("extensions.scripting.allowed.remove.arguments.user")
+			description = "extensions.scripting.allowed.remove.arguments.user"
 		}
 	}
 }

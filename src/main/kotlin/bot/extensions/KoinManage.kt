@@ -7,15 +7,11 @@ import com.kotlindiscord.kord.extensions.commands.application.slash.ephemeralSub
 import com.kotlindiscord.kord.extensions.commands.converters.impl.string
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.ephemeralSlashCommand
-import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.types.respond
-import org.koin.core.component.inject
 
 class KoinManage : Extension() {
 	override val name = "koin-manage"
 	override val bundle = "cs_dsbot"
-
-	private val translationsProvider: TranslationsProvider by inject()
 
 	override suspend fun setup() {
 
@@ -73,7 +69,7 @@ class KoinManage : Extension() {
 	inner class NameArgs : Arguments() {
 		val name by string {
 			name = "name"
-			description = translationsProvider.translate("extensions.koin.arguments.name")
+			description = "extensions.koin.arguments.name"
 		}
 	}
 }

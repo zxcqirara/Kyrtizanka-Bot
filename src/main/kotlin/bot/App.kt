@@ -129,6 +129,7 @@ suspend fun main() {
 			add(::PrivateRooms)
 			add(::Statistic)
 			add(::ReloadExtension)
+			add(::TokenLookup)
 		}
 	}
 

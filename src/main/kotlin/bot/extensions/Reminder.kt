@@ -7,7 +7,6 @@ import com.kotlindiscord.kord.extensions.commands.converters.impl.int
 import com.kotlindiscord.kord.extensions.commands.converters.impl.string
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.ephemeralSlashCommand
-import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.scheduling.Scheduler
 import com.kotlindiscord.kord.extensions.utils.scheduling.Task
@@ -16,7 +15,6 @@ import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.behavior.channel.createMessage
 import dev.kord.rest.builder.message.create.embed
 import kotlinx.datetime.Clock
-import org.koin.core.component.inject
 import kotlin.time.Duration.Companion.ZERO
 import kotlin.time.ExperimentalTime
 
@@ -26,7 +24,6 @@ class Reminder : Extension() {
 	override val bundle = "cs_dsbot"
 
 	private val reminds = mutableListOf<Remind>()
-	private val translationsProvider: TranslationsProvider by inject()
 
 	override suspend fun setup() {
 		ephemeralSlashCommand {
@@ -145,18 +142,18 @@ class Reminder : Extension() {
 	inner class CreateArgs : Arguments() {
 		val duration by string {
 			name = "duration"
-			description = translationsProvider.translate("extensions.reminder.create.arguments.duration")
+			description = "extensions.reminder.create.arguments.duration"
 		}
 		val text by string {
 			name = "text"
-			description = translationsProvider.translate("extensions.reminder.create.arguments.text")
+			description = "extensions.reminder.create.arguments.text"
 		}
 	}
 
 	inner class RemoveArgs : Arguments() {
 		val id by int {
 			name = "id"
-			description = translationsProvider.translate("extensions.reminder.remove.arguments.id")
+			description = "extensions.reminder.remove.arguments.id"
 		}
 	}
 

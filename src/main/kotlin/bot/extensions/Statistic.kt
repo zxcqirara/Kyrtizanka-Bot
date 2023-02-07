@@ -6,6 +6,7 @@ import bot.lib.ChartGithubTheme
 import bot.lib.Config
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.application.slash.PublicSlashCommandContext
+import com.kotlindiscord.kord.extensions.commands.application.slash.converters.ChoiceEnum
 import com.kotlindiscord.kord.extensions.commands.application.slash.publicSubCommand
 import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalMember
 import com.kotlindiscord.kord.extensions.components.forms.ModalForm
@@ -57,7 +58,7 @@ class Statistic : Extension() {
 				}
 			}
 
-			publicSubCommand(::TargetArgs) {
+			publicSubCommand(::TargetNTimeArgs) {
 				name = "extensions.statistic.user.commandName"
 				description = "extensions.statistic.user.commandDescription"
 
@@ -157,10 +158,16 @@ class Statistic : Extension() {
 		File(fileName).delete()
 	}
 
-	inner class TargetArgs : Arguments() {
+	inner class TargetNTimeArgs : Arguments() {
 		val target by optionalMember {
 			name = "user"
-			description = translationsProvider.translate("extensions.statistic.user.arguments.target")
+			description = "extensions.statistic.user.arguments.target"
 		}
+	}
+
+	enum class TimeChoice : ChoiceEnum {
+		HOUR { override val readableName = "extensions.statistic.arguments.time.hour" },
+		DAY { override val readableName = "extensions.statistic.arguments.time.day" },
+		MONTH { override val readableName = "extensions.statistic.arguments.time.month" },
 	}
 }
