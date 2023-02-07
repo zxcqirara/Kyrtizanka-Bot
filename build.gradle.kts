@@ -3,8 +3,8 @@ val ktormVersion: String by project
 val exposedVersion: String by project
 
 plugins {
-	kotlin("jvm") version "1.7.0"
-	kotlin("plugin.serialization") version "1.6.20"
+	kotlin("jvm") version "1.8.0"
+	kotlin("plugin.serialization") version "1.8.0"
 	application
 	id("com.palantir.git-version") version "0.15.0"
 	id("com.github.johnrengelman.shadow") version "7.1.2"
@@ -16,6 +16,8 @@ version = gitVersion()
 val versionFile = file("src/main/resources/version.txt")
 if (!versionFile.exists()) versionFile.createNewFile()
 versionFile.writeText(version.toString())
+
+val ktorVersion = "2.2.3"
 
 repositories {
 	mavenCentral()
@@ -54,6 +56,11 @@ dependencies {
 	implementation("com.github.aikaterna:lavaplayer-natives:original-SNAPSHOT")
 
 	implementation("org.knowm.xchart:xchart:3.8.3")
+
+	implementation("io.ktor:ktor-client-core:$ktorVersion")
+	implementation("io.ktor:ktor-client-cio:$ktorVersion")
+	implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
+	implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
 }
 
 application {
