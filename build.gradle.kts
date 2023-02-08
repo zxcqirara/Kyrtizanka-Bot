@@ -22,7 +22,7 @@ val ktorVersion = "2.2.3"
 repositories {
 	mavenCentral()
 	maven("https://oss.sonatype.org/content/repositories/snapshots")
-	maven("https://maven.kotlindiscord.com/repository/maven-public/")
+	maven("https://s01.oss.sonatype.org/content/repositories/snapshots")
 	maven("https://m2.dv8tion.net/releases")
 	maven("https://jitpack.io")
 	maven("https://repo.kotlin.link")
