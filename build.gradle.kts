@@ -35,7 +35,7 @@ dependencies {
 		}
 	}
 	implementation("com.kotlindiscord.kord.extensions:kord-extensions:1.5.6-SNAPSHOT")
-	implementation("com.kotlindiscord.kord.extensions:time4j:1.5.3-SNAPSHOT")
+	implementation("com.kotlindiscord.kord.extensions:time4j:1.5.6-SNAPSHOT")
 
 	implementation("io.sentry:sentry:6.11.0")
 	implementation("ch.qos.logback:logback-classic:1.3.5")
