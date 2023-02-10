@@ -23,7 +23,7 @@ class Reminder : Extension() {
 	override val name = "reminder"
 	override val bundle = "cs_dsbot"
 
-	private val reminds = mutableListOf<Remind>()
+	private val reminders = mutableListOf<Remind>()
 
 	override suspend fun setup() {
 		ephemeralSlashCommand {
@@ -54,7 +54,7 @@ class Reminder : Extension() {
 
 					val fomattedTime = Utils.parseTime(Clock.System.now() + duration)
 					lateinit var task: Task
-					var remind: Remind? = null
+					var reminder: Remind? = null
 
 					task = Scheduler().schedule(duration) {
 						channel.createMessage {
@@ -67,11 +67,11 @@ class Reminder : Extension() {
 							}
 						}
 
-						reminds.remove(remind)
+						reminders.remove(reminder)
 					}
 
-					remind = Remind(user, text, task, fomattedTime)
-					reminds += remind
+					reminder = Remind(user, text, task, fomattedTime)
+					reminders += reminder
 				}
 			}
 
@@ -80,15 +80,15 @@ class Reminder : Extension() {
 				description = "extensions.reminder.list.commandDescription"
 
 				action {
-					val reminds = reminds.filter { it.user == user }
+					val reminders = reminders.filter { it.user == user }
 
 					respond {
 						embed {
-							if (reminds.isNotEmpty()) {
+							if (reminders.isNotEmpty()) {
 								title = translate("extensions.reminder.list.embed.title")
 								description = buildString {
-									reminds.forEach { remind ->
-										appendLine("#${reminds.indexOf(remind)} **${remind.fomattedTime}** `${getShort(remind.text)}`")
+									reminders.forEach { remind ->
+										appendLine("#${reminders.indexOf(remind)} **${remind.fomattedTime}** `${getShort(remind.text)}`")
 									}
 								}
 							}
@@ -107,7 +107,7 @@ class Reminder : Extension() {
 				description = "extensions.reminder.remove.commandDescription"
 
 				action {
-					val remind = reminds.getOrNull(arguments.id)
+					val remind = reminders.getOrNull(arguments.id)
 
 					if (remind == null) {
 						respond { embed {
@@ -126,7 +126,7 @@ class Reminder : Extension() {
 					}
 
 					remind.task.cancel()
-					reminds.remove(remind)
+					reminders.remove(remind)
 
 					respond {
 						embed {
@@ -142,9 +142,9 @@ class Reminder : Extension() {
 				description = "extensions.reminder.edit.commandDescription"
 
 				action {
-					val remind = reminds.getOrNull(arguments.id)
+					val reminder = reminders.getOrNull(arguments.id)
 
-					if (remind == null) {
+					if (reminder == null) {
 						respond { embed {
 							title = translate("extensions.reminder.errors.cantFind")
 							color = Color(0xFF0000)
@@ -152,7 +152,7 @@ class Reminder : Extension() {
 						return@action
 					}
 
-					if (user != remind.user) {
+					if (user != reminder.user) {
 						respond { embed {
 							title = translate("extensions.reminder.errors.notYourRemind")
 							color = Color(0xFF0000)
@@ -160,7 +160,7 @@ class Reminder : Extension() {
 						return@action
 					}
 
-					remind.text = arguments.newText
+					reminder.text = arguments.newText
 
 					respond {
 						embed {
