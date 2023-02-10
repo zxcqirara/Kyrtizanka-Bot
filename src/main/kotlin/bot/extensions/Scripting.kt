@@ -88,7 +88,7 @@ class Scripting : Extension() {
 						message.reply { embed {
 							title = translate("extensions.scripting.allowed.add.embed.title")
 							description = translate("extensions.scripting.allowed.add.embed.description")
-							color = Color(0x0000CC)
+							color = Color(0x1C7ED6)
 						} }
 					}
 				}
@@ -108,7 +108,7 @@ class Scripting : Extension() {
 								"extensions.scripting.allowed.remove.embed.description",
 								arrayOf(user.mention)
 							)
-							color = Color(0x0000CC)
+							color = Color(0x1C7ED6)
 						} }
 					}
 				}

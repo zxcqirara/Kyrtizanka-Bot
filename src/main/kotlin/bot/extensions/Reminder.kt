@@ -49,7 +49,7 @@ class Reminder : Extension() {
 					respond { embed {
 						title = translate("extensions.reminder.create.embed.title")
 						description = text
-						color = Color(0x0000CC)
+						color = Color(0x1C7ED6)
 					} }
 
 					val fomattedTime = Utils.parseTime(Clock.System.now() + duration)
@@ -63,7 +63,7 @@ class Reminder : Extension() {
 							embed {
 								title = translate("extensions.reminder.remind")
 								description = text
-								color = Color(0x0000CC)
+								color = Color(0x1C7ED6)
 							}
 						}
 
@@ -96,7 +96,7 @@ class Reminder : Extension() {
 								title = translate("extensions.reminder.errors.noReminds")
 							}
 
-							color = Color(0x0000CC)
+							color = Color(0x1C7ED6)
 						}
 					}
 				}
@@ -131,7 +131,42 @@ class Reminder : Extension() {
 					respond {
 						embed {
 							title = translate("extensions.reminder.remove.embed.title", arrayOf(arguments.id))
-							color = Color(0x0000CC)
+							color = Color(0x1C7ED6)
+						}
+					}
+				}
+			}
+
+			ephemeralSubCommand(::EditArgs) {
+				name = "extensions.reminder.edit.commandName"
+				description = "extensions.reminder.edit.commandDescription"
+
+				action {
+					val remind = reminds.getOrNull(arguments.id)
+
+					if (remind == null) {
+						respond { embed {
+							title = translate("extensions.reminder.errors.cantFind")
+							color = Color(0xFF0000)
+						} }
+						return@action
+					}
+
+					if (user != remind.user) {
+						respond { embed {
+							title = translate("extensions.reminder.errors.notYourRemind")
+							color = Color(0xFF0000)
+						} }
+						return@action
+					}
+
+					remind.text = arguments.newText
+
+					respond {
+						embed {
+							title = translate("extensions.reminder.edit.embed.title", arrayOf(arguments.id))
+							description = arguments.newText
+							color = Color(0x1C7ED6)
 						}
 					}
 				}
@@ -153,7 +188,18 @@ class Reminder : Extension() {
 	inner class RemoveArgs : Arguments() {
 		val id by int {
 			name = "id"
-			description = "extensions.reminder.remove.arguments.id"
+			description = "extensions.reminder.arguments.id"
+		}
+	}
+
+	inner class EditArgs : Arguments() {
+		val id by int {
+			name = "id"
+			description = "extensions.reminder.arguments.id"
+		}
+		val newText by string {
+			name = "text"
+			description = "extensions.reminder.edit.arguments.newText"
 		}
 	}
 
@@ -171,7 +217,7 @@ class Reminder : Extension() {
 
 	data class Remind(
 		val user: UserBehavior,
-		val text: String,
+		var text: String,
 		val task: Task,
 		val fomattedTime: String
 	)
