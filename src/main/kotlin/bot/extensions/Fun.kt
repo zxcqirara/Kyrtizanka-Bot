@@ -20,8 +20,6 @@ class Fun : Extension() {
 	override val name = "fun"
 	override val bundle = "cs_dsbot"
 
-	private val translationProvider: TranslationsProvider by inject()
-
 	override suspend fun setup() {
 
 		publicSlashCommand(::RollArgs) {
@@ -149,13 +147,13 @@ class Fun : Extension() {
 	inner class RollArgs : Arguments() {
 		val max by defaultingInt {
 			name = "max"
-			description = translationProvider.translate("extensions.fun.roll.arguments.max")
+			description = "extensions.fun.roll.arguments.max"
 			defaultValue = 100
 		}
 
 		val min by defaultingInt {
 			name = "min"
-			description = translationProvider.translate("extensions.fun.roll.arguments.min")
+			description = "extensions.fun.roll.arguments.min"
 			defaultValue = 1
 		}
 	}
@@ -163,7 +161,7 @@ class Fun : Extension() {
 	inner class DuelArgs : Arguments() {
 		val member by member {
 			name = "member"
-			description = translationProvider.translate("extensions.fun.duel.arguments.member")
+			description = "extensions.fun.duel.arguments.member"
 		}
 	}
 }

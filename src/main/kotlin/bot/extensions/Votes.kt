@@ -1,8 +1,9 @@
 package bot.extensions
 
+import bot.lib.Config
 import bot.lib.Utils
 import com.kotlindiscord.kord.extensions.commands.Arguments
-import com.kotlindiscord.kord.extensions.commands.converters.impl.defaultingString
+import com.kotlindiscord.kord.extensions.commands.converters.impl.duration
 import com.kotlindiscord.kord.extensions.commands.converters.impl.string
 import com.kotlindiscord.kord.extensions.components.components
 import com.kotlindiscord.kord.extensions.components.ephemeralButton
@@ -14,7 +15,7 @@ import com.kotlindiscord.kord.extensions.types.edit
 import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.scheduling.Scheduler
 import com.kotlindiscord.kord.extensions.utils.scheduling.Task
-import dev.kord.common.Color
+import com.kotlindiscord.kord.extensions.utils.toDuration
 import dev.kord.common.entity.ButtonStyle
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.channel.createMessage
@@ -22,15 +23,15 @@ import dev.kord.core.behavior.edit
 import dev.kord.core.behavior.interaction.response.edit
 import dev.kord.rest.builder.message.create.embed
 import dev.kord.rest.builder.message.modify.embed
-import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
 import org.koin.core.component.inject
-import kotlin.time.Duration
 
 class Votes : Extension() {
 	override val name = "votes"
 	override val bundle = "cs_dsbot"
 
 	private val votes = mutableListOf<Vote>()
+	private val timeZone = TimeZone.of(Config.discord.timeZone)
 	val translatorProvider: TranslationsProvider by inject()
 
 	override suspend fun setup() {
@@ -39,6 +40,7 @@ class Votes : Extension() {
 			description = "extensions.votes.commandDescription"
 
 			action {
+				val duration = arguments.duration.toDuration(TimeZone.of(Config.discord.timeZone))
 				val choices = arguments.choices
 					.replace(", ", ",")
 					.split(",")
@@ -48,7 +50,7 @@ class Votes : Extension() {
 					return@action
 				}
 
-				val voteStartTime = Utils.parseTime(Clock.System.now())
+				val voteStartTime = event.interaction.id.timestamp
 				val vote = Vote(arguments.title, choices.map(::Choice), translatorProvider, this@Votes.bundle)
 				votes += vote
 				val voteIndex = votes.indexOf(vote)
@@ -58,7 +60,7 @@ class Votes : Extension() {
 						title = translate("extensions.votes.inProgress.title")
 						description = "__${arguments.title}__\n" + vote.getStatsString()
 
-						footer { text = translate("extensions.votes.startedAt", arrayOf(voteStartTime)) }
+						timestamp = voteStartTime
 					}
 
 					components {
@@ -82,7 +84,7 @@ class Votes : Extension() {
 											title = translate("extensions.votes.inProgress.title")
 											description = "__${arguments.title}__\n" + vote.getStatsString()
 
-											footer { text = translate("extensions.votes.startedAt", arrayOf(voteStartTime)) }
+											timestamp = voteStartTime
 										}
 									}
 
@@ -144,8 +146,11 @@ class Votes : Extension() {
 										}
 
 										footer {
-											text = translate("extensions.votes.startedAt", arrayOf(voteStartTime)) + "\n" +
-												translate("extensions.votes.endedAt", arrayOf(Utils.parseTime(Clock.System.now())))
+											val startTimestamp = Utils.parseTime(voteStartTime, timeZone)
+											val nowTimestamp = Utils.parseTime(event.interaction.id.timestamp, timeZone)
+
+											text = translate("extensions.votes.startedAt", arrayOf(startTimestamp)) + "\n" +
+												translate("extensions.votes.endedAt", arrayOf(nowTimestamp))
 										}
 									}
 
@@ -156,16 +161,6 @@ class Votes : Extension() {
 							}
 						}
 					}
-				}
-
-				val duration = Utils.parseToDuration(arguments.duration)
-				if (duration == null || duration.isNegative() || duration == Duration.ZERO) {
-					respond { embed {
-						title = translate("extensions.errors.unknownDurationFormat")
-						color = Color(0xFF0000)
-					} }
-
-					return@action
 				}
 
 				vote.task = Scheduler().schedule(duration) {
@@ -189,8 +184,11 @@ class Votes : Extension() {
 							}
 
 							footer {
-								text = translate("extensions.votes.startedAt", arrayOf(voteStartTime)) + "\n" +
-									translate("extensions.votes.endedAt", arrayOf(Utils.parseTime(Clock.System.now())))
+								val startTimestamp = Utils.parseTime(voteStartTime, timeZone)
+								val nowTimestamp = Utils.parseTime(event.interaction.id.timestamp, timeZone)
+
+								text = translate("extensions.votes.startedAt", arrayOf(startTimestamp)) + "\n" +
+									translate("extensions.votes.endedAt", arrayOf(nowTimestamp))
 							}
 						}
 
@@ -204,17 +202,15 @@ class Votes : Extension() {
 	inner class Args: Arguments() {
 		val title by string {
 			name = "title"
-			description = translatorProvider.translate("extensions.votes.arguments.title")
+			description = "extensions.votes.arguments.title"
 		}
 		val choices by string {
 			name = "choices"
-			description = translatorProvider.translate("extensions.votes.arguments.choices")
+			description = "extensions.votes.arguments.choices"
 		}
-		val duration by defaultingString {
+		val duration by duration {
 			name = "duration"
-			description = translatorProvider.translate("extensions.votes.arguments.duration")
-
-			defaultValue = "1d"
+			description = "extensions.votes.arguments.duration"
 		}
 	}
 

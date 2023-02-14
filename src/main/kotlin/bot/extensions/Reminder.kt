@@ -1,8 +1,9 @@
 package bot.extensions
 
-import bot.lib.Utils
+import bot.lib.Config
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.application.slash.ephemeralSubCommand
+import com.kotlindiscord.kord.extensions.commands.converters.impl.duration
 import com.kotlindiscord.kord.extensions.commands.converters.impl.int
 import com.kotlindiscord.kord.extensions.commands.converters.impl.string
 import com.kotlindiscord.kord.extensions.extensions.Extension
@@ -10,12 +11,15 @@ import com.kotlindiscord.kord.extensions.extensions.ephemeralSlashCommand
 import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.scheduling.Scheduler
 import com.kotlindiscord.kord.extensions.utils.scheduling.Task
+import com.kotlindiscord.kord.extensions.utils.toDuration
 import dev.kord.common.Color
+import dev.kord.common.DiscordTimestampStyle
+import dev.kord.common.toMessageFormat
 import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.behavior.channel.createMessage
 import dev.kord.rest.builder.message.create.embed
-import kotlinx.datetime.Clock
-import kotlin.time.Duration.Companion.ZERO
+import kotlinx.datetime.Instant
+import kotlinx.datetime.TimeZone
 import kotlin.time.ExperimentalTime
 
 @ExperimentalTime
@@ -36,15 +40,7 @@ class Reminder : Extension() {
 
 				action {
 					val text = arguments.text
-					val duration = Utils.parseToDuration(arguments.duration)
-
-					if (duration == null || duration.isNegative() || duration == ZERO) {
-						respond { embed {
-							title = translate("extensions.errors.unknownDurationFormat")
-							color = Color(0xFF0000)
-						} }
-						return@action
-					}
+					val duration = arguments.duration.toDuration(TimeZone.of(Config.discord.timeZone))
 
 					respond { embed {
 						title = translate("extensions.reminder.create.embed.title")
@@ -52,7 +48,6 @@ class Reminder : Extension() {
 						color = Color(0x1C7ED6)
 					} }
 
-					val fomattedTime = Utils.parseTime(Clock.System.now() + duration)
 					lateinit var task: Task
 					var reminder: Remind? = null
 
@@ -70,7 +65,7 @@ class Reminder : Extension() {
 						reminders.remove(reminder)
 					}
 
-					reminder = Remind(user, text, task, fomattedTime)
+					reminder = Remind(user, text, task, event.interaction.id.timestamp + duration)
 					reminders += reminder
 				}
 			}
@@ -88,7 +83,11 @@ class Reminder : Extension() {
 								title = translate("extensions.reminder.list.embed.title")
 								description = buildString {
 									reminders.forEach { remind ->
-										appendLine("#${reminders.indexOf(remind)} **${remind.fomattedTime}** `${getShort(remind.text)}`")
+										val index = reminders.indexOf(remind)
+										val timestamp = remind.endsTime.toMessageFormat(DiscordTimestampStyle.ShortDateTime)
+										val text = getShort(remind.text)
+
+										appendLine("#$index $timestamp `$text`")
 									}
 								}
 							}
@@ -175,7 +174,7 @@ class Reminder : Extension() {
 	}
 
 	inner class CreateArgs : Arguments() {
-		val duration by string {
+		val duration by duration {
 			name = "duration"
 			description = "extensions.reminder.create.arguments.duration"
 		}
@@ -219,6 +218,6 @@ class Reminder : Extension() {
 		val user: UserBehavior,
 		var text: String,
 		val task: Task,
-		val fomattedTime: String
+		val endsTime: Instant
 	)
 }

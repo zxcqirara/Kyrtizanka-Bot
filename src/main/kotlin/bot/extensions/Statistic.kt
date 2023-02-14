@@ -95,7 +95,11 @@ class Statistic : Extension() {
 		}
 	}
 
-	private suspend fun procedureGraphSend(context: PublicSlashCommandContext<*, ModalForm>, dbData: List<Experience>, timeChoice: TimeChoice) {
+	private suspend fun procedureGraphSend(
+		context: PublicSlashCommandContext<*, ModalForm>,
+		dbData: List<Experience>,
+		timeChoice: TimeChoice
+	) {
 		val gray = Color(0x868E96)
 		val green = Color(0x40C057)
 		val red = Color(0xF03E3E)
