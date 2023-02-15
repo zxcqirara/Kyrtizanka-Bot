@@ -78,6 +78,10 @@ class Experience : Extension() {
 						"((`){1,3}|(\\*){1,3}|(~){2}|(\\|){2}|^(>){1,3}|(_){1,2})+",
 						RegexOption.MULTILINE
 					), "") // Markdown
+					.replace(Regex("(.)\\1{3,}"), "S") // Repetitive letters
+					.replace(Regex(
+						"https?://(www\\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_+.~#?&/=]*)"
+					), "L") // Links
 
 				val count = (content.length * Config.discord.experience.perCharacter).roundToInt().toShort()
 
