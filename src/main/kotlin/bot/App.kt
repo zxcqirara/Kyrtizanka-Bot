@@ -130,6 +130,7 @@ suspend fun main() {
 			add(::Statistic)
 			add(::ReloadExtension)
 			add(::TokenLookup)
+			add(::CurrentTime)
 		}
 	}
 
