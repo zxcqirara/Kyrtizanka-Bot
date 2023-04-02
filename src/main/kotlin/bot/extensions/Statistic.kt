@@ -110,7 +110,7 @@ class Statistic : Extension() {
 			when (timeChoice) {
 				TimeChoice.HOUR -> localTime.minute
 				TimeChoice.DAY -> localTime.hour
-				TimeChoice.MONTH -> localTime.dayOfYear
+				TimeChoice.MONTH -> localTime.dayOfMonth
 			}
 		}
 
