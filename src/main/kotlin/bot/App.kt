@@ -131,6 +131,7 @@ suspend fun main() {
 			add(::ReloadExtension)
 			add(::TokenLookup)
 			add(::CurrentTime)
+			add(::AutoRegion)
 		}
 	}
 
