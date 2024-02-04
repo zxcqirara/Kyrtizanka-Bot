@@ -29,9 +29,9 @@ repositories {
 }
 
 dependencies {
-	implementation("dev.kord:kord-core:0.13.x-SNAPSHOT") {
+	implementation("dev.kord:kord-core:0.14.0-SNAPSHOT") {
 		capabilities {
-			requireCapability("dev.kord:core-voice:0.13.x-SNAPSHOT")
+			requireCapability("dev.kord:core-voice:0.14.0-SNAPSHOT")
 		}
 	}
 	implementation("com.kotlindiscord.kord.extensions:kord-extensions:1.7.1-SNAPSHOT")
