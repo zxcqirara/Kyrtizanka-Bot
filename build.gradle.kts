@@ -29,13 +29,13 @@ repositories {
 }
 
 dependencies {
-	implementation("dev.kord:kord-core:0.8.x-SNAPSHOT") {
+	implementation("dev.kord:kord-core:0.13.x-SNAPSHOT") {
 		capabilities {
-			requireCapability("dev.kord:core-voice:0.8.x-SNAPSHOT")
+			requireCapability("dev.kord:core-voice:0.13.x-SNAPSHOT")
 		}
 	}
 	implementation("com.kotlindiscord.kord.extensions:kord-extensions:1.7.1-SNAPSHOT")
-	implementation("com.kotlindiscord.kord.extensions:time4j:1.5.6-SNAPSHOT")
+	implementation("com.kotlindiscord.kord.extensions:time4j:1.7.1-SNAPSHOT")
 
 	implementation("io.sentry:sentry:6.11.0")
 	implementation("ch.qos.logback:logback-classic:1.4.12")
