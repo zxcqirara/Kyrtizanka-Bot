@@ -16,6 +16,7 @@ import dev.kord.common.annotation.KordVoice
 import dev.kord.core.kordLogger
 import dev.kord.gateway.Intent
 import dev.kord.gateway.Intents
+import dev.kord.gateway.NON_PRIVILEGED
 import dev.kord.gateway.PrivilegedIntent
 import io.github.config4k.toConfig
 import okio.FileSystem
@@ -30,7 +31,7 @@ import org.jetbrains.exposed.sql.Database as KtDatabase
 @ExperimentalTime
 @PrivilegedIntent
 suspend fun main() {
-	val configPath = Config.path.toPath()
+	val configPath = Config.PATH.toPath()
 
 	if (!FileSystem.SYSTEM.exists(configPath)) {
 		kordLogger.warn("Config not found, creating...")
@@ -82,7 +83,7 @@ suspend fun main() {
 	val discordConfig = Config.discord
 	val bot = ExtensibleBot(discordConfig.token) {
 		intents {
-			+ Intents.nonPrivileged
+			+ Intents.NON_PRIVILEGED
 			+ Intent.MessageContent
 		}
 

@@ -6,12 +6,6 @@ class XpUpdateEvent(
 	newXp: Long,
 	oldLevel: Int
 ) : KordExEvent {
-	var newLevel: Int
-	var needUpdate: Boolean
-
-	init {
-		newLevel = Utils.levelOfXp(newXp)
-
-		needUpdate = oldLevel < newLevel
-	}
+	var newLevel = Utils.levelOfXp(newXp)
+	var needUpdate = oldLevel < newLevel
 }

@@ -30,8 +30,8 @@ class DiscordClient(private val token: String) {
 	private val baseUrl = "https://discord.com/api/v9"
 	private val chromeAgent = "Chrome/109.0.0.0"
 
-	lateinit var userData: AccountObject
-	lateinit var guildsData: List<GuildObject>
+	private lateinit var userData: AccountObject
+	private lateinit var guildsData: List<GuildObject>
 
 	var isBot by Delegates.notNull<Boolean>()
 

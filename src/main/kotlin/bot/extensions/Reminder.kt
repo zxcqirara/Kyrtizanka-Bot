@@ -8,7 +8,6 @@ import com.kotlindiscord.kord.extensions.commands.converters.impl.int
 import com.kotlindiscord.kord.extensions.commands.converters.impl.string
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.ephemeralSlashCommand
-import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.scheduling.Scheduler
 import com.kotlindiscord.kord.extensions.utils.scheduling.Task
 import com.kotlindiscord.kord.extensions.utils.toDuration
@@ -17,7 +16,7 @@ import dev.kord.common.DiscordTimestampStyle
 import dev.kord.common.toMessageFormat
 import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.behavior.channel.createMessage
-import dev.kord.rest.builder.message.create.embed
+import dev.kord.rest.builder.message.embed
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlin.time.ExperimentalTime

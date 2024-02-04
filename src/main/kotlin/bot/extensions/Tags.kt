@@ -6,7 +6,6 @@ import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.application.slash.ephemeralSubCommand
 import com.kotlindiscord.kord.extensions.commands.converters.impl.coalescingString
 import com.kotlindiscord.kord.extensions.extensions.*
-import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.addReaction
 import com.kotlindiscord.kord.extensions.utils.hasPermission
 import com.kotlindiscord.kord.extensions.utils.isNullOrBot
@@ -58,7 +57,7 @@ class Tags : Extension() {
 				failIfNot(
 					event.member!!.hasPermission(Permission.ManageGuild) ||
 						event.member!!.hasPermission(Permission.Administrator) ||
-						event.getGuild()!!.ownerId == event.member!!.id
+						event.getGuildOrNull()!!.ownerId == event.member!!.id
 				)
 			}
 

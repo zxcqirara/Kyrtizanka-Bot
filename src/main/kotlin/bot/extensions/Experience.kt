@@ -11,7 +11,6 @@ import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.event
 import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
-import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.delete
 import com.kotlindiscord.kord.extensions.utils.selfMember
 import dev.kord.common.Color
@@ -25,7 +24,7 @@ import dev.kord.core.entity.channel.TextChannel
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.core.event.user.VoiceStateUpdateEvent
 import dev.kord.rest.builder.message.EmbedBuilder
-import dev.kord.rest.builder.message.create.embed
+import dev.kord.rest.builder.message.embed
 import kotlinx.coroutines.flow.*
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
@@ -65,7 +64,7 @@ class Experience : Extension() {
 			}
 
 			action {
-				if (event.member!! == event.getGuild()?.selfMember())
+				if (event.member!! == event.getGuildOrNull()?.selfMember())
 					return@action
 
 				val userId = event.member?.asUser()!!.id.value.toLong()
@@ -224,7 +223,7 @@ class Experience : Extension() {
 						color = if (Database.hasSpecialAccess(kord, event.interaction.user.id))
 							Color(0x674EA7) else Color(0x3D85C6)
 
-						thumbnail { url = (target.avatar ?: target.defaultAvatar).url }
+						thumbnail { url = (target.avatar ?: target.defaultAvatar).cdnUrl.toUrl() }
 					}
 				}
 			}
@@ -239,8 +238,10 @@ class Experience : Extension() {
 				val useEmoji = Database.useEmoji(event.interaction.user.id)
 
 				respond {
-					embeds += topEmbed(
-						kord, this@Experience.translationsProvider, this@Experience.bundle, users, guild!!, useEmoji
+					embeds?.plusAssign(
+						topEmbed(
+							kord, this@Experience.translationsProvider, this@Experience.bundle, users, guild!!, useEmoji
+						)
 					)
 				}
 			}
@@ -288,7 +289,7 @@ class Experience : Extension() {
 							val member = guild.getMemberOrNull(Snowflake(user.id.value))
 								?: kord.getUser(Snowflake(user.id.value))
 
-							val nick = (member as? Member)?.displayName ?: return@forEach
+							val nick = (member as? Member)?.nickname ?: return@forEach
 
 							name += nick
 							value = "**$expSymb** ${user.experience} (${user.level}) | **$ratingSymbol** ${user.socialRating}"

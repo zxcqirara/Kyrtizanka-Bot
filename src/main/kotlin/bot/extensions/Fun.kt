@@ -7,13 +7,8 @@ import com.kotlindiscord.kord.extensions.components.components
 import com.kotlindiscord.kord.extensions.components.publicButton
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
-import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
-import com.kotlindiscord.kord.extensions.types.edit
-import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.common.entity.ButtonStyle
-import dev.kord.rest.builder.message.create.embed
-import dev.kord.rest.builder.message.modify.embed
-import org.koin.core.component.inject
+import dev.kord.rest.builder.message.embed
 import kotlin.time.Duration.Companion.seconds
 
 class Fun : Extension() {
@@ -38,7 +33,7 @@ class Fun : Extension() {
 			description = "extensions.fun.duel.commandDescription"
 
 			action duelCommand@ {
-				val userName = member!!.asMember().displayName
+				val userName = member!!.asMember().nickname
 
 				if (arguments.member.isBot) {
 					respond {

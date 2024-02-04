@@ -68,6 +68,7 @@ class AnyOp(private val expr1: Expression<*>, private val expr2: Expression<*>) 
 
 class ContainsOp(expr1: Expression<*>, expr2: Expression<*>) : ComparisonOp(expr1, expr2, "@>")
 
+@Suppress("unused")
 infix fun<T, S> ExpressionWithColumnType<T>.any(t: S) : Op<Boolean> {
 	if (t == null) {
 		return IsNullOp(this)

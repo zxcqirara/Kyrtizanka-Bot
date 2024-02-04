@@ -13,7 +13,7 @@ import com.kotlindiscord.kord.extensions.extensions.chatGroupCommand
 import dev.kord.common.Color
 import dev.kord.core.behavior.reply
 import dev.kord.core.event.message.MessageCreateEvent
-import dev.kord.rest.builder.message.create.embed
+import dev.kord.rest.builder.message.embed
 import javax.script.ScriptEngineManager
 
 class Scripting : Extension() {

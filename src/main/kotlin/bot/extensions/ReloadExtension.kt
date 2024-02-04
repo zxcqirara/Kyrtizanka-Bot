@@ -3,7 +3,6 @@ package bot.extensions
 import bot.lib.Config
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.ephemeralSlashCommand
-import com.kotlindiscord.kord.extensions.types.respond
 
 class ReloadExtension : Extension() {
 	override val name = "reload"

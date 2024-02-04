@@ -11,8 +11,6 @@ import com.kotlindiscord.kord.extensions.components.types.emoji
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.ephemeralSlashCommand
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
-import com.kotlindiscord.kord.extensions.types.edit
-import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.scheduling.Scheduler
 import com.kotlindiscord.kord.extensions.utils.scheduling.Task
 import com.kotlindiscord.kord.extensions.utils.toDuration
@@ -21,8 +19,7 @@ import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.channel.createMessage
 import dev.kord.core.behavior.edit
 import dev.kord.core.behavior.interaction.response.edit
-import dev.kord.rest.builder.message.create.embed
-import dev.kord.rest.builder.message.modify.embed
+import dev.kord.rest.builder.message.embed
 import kotlinx.datetime.TimeZone
 import org.koin.core.component.inject
 
@@ -32,7 +29,7 @@ class Votes : Extension() {
 
 	private val votes = mutableListOf<Vote>()
 	private val timeZone = TimeZone.of(Config.discord.timeZone)
-	val translatorProvider: TranslationsProvider by inject()
+	private val translatorProvider: TranslationsProvider by inject()
 
 	override suspend fun setup() {
 		ephemeralSlashCommand(::Args) {

@@ -5,13 +5,13 @@ import io.github.config4k.extract
 import java.io.File
 
 object Config {
-	const val path = "config"
+	const val PATH = "config"
 
 	lateinit var discord: ConfigDto.Discord
 	lateinit var database: ConfigDto.Database
 
 	fun update() {
-		val config = ConfigFactory.parseFile(File(path))
+		val config = ConfigFactory.parseFile(File(PATH))
 		discord = config.extract("discord")
 		database = config.extract("database")
 	}

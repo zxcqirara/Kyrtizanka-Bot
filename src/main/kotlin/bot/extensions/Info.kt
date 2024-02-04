@@ -2,8 +2,7 @@ package bot.extensions
 
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
-import com.kotlindiscord.kord.extensions.types.respond
-import dev.kord.rest.builder.message.create.embed
+import dev.kord.rest.builder.message.embed
 
 class Info : Extension() {
 	override val name = "info"
