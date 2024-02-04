@@ -34,17 +34,17 @@ dependencies {
 			requireCapability("dev.kord:core-voice:0.8.x-SNAPSHOT")
 		}
 	}
-	implementation("com.kotlindiscord.kord.extensions:kord-extensions:1.5.6-SNAPSHOT")
+	implementation("com.kotlindiscord.kord.extensions:kord-extensions:1.7.1-SNAPSHOT")
 	implementation("com.kotlindiscord.kord.extensions:time4j:1.5.6-SNAPSHOT")
 
 	implementation("io.sentry:sentry:6.11.0")
-	implementation("ch.qos.logback:logback-classic:1.3.5")
+	implementation("ch.qos.logback:logback-classic:1.4.12")
 
 	implementation(kotlin("scripting-jsr223"))
 	runtimeOnly(kotlin("script-runtime"))
 
 	implementation("io.github.config4k:config4k:0.5.0")
-	implementation("com.squareup.okio:okio:3.3.0")
+	implementation("com.squareup.okio:okio:3.5.0")
 
 	implementation("org.jetbrains.exposed:exposed-core:${exposedVersion}")
 	implementation("org.jetbrains.exposed:exposed-dao:${exposedVersion}")
