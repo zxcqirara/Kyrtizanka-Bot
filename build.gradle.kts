@@ -21,7 +21,8 @@ val ktorVersion = "2.2.3"
 
 repositories {
 	mavenCentral()
-	maven("https://oss.sonatype.org/content/repositories/snapshots")
+	maven("https://europe-west3-maven.pkg.dev/mik-music/kord")
+	maven("https://oss.sonatype.org/content/repositories/snapshots/")
 	maven("https://s01.oss.sonatype.org/content/repositories/snapshots")
 	maven("https://m2.dv8tion.net/releases")
 	maven("https://jitpack.io")
@@ -29,11 +30,8 @@ repositories {
 }
 
 dependencies {
-	implementation("dev.kord:kord-core:0.14.0-SNAPSHOT") {
-		capabilities {
-			requireCapability("dev.kord:core-voice:0.14.0-SNAPSHOT")
-		}
-	}
+	implementation("dev.kord:kord-core:0.14.0-SNAPSHOT")
+	implementation("dev.kord:kord-voice:0.14.0-SNAPSHOT")
 	implementation("com.kotlindiscord.kord.extensions:kord-extensions:1.7.1-SNAPSHOT")
 	implementation("com.kotlindiscord.kord.extensions:time4j:1.7.1-SNAPSHOT")
 

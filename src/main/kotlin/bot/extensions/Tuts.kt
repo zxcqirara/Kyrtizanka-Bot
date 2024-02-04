@@ -11,7 +11,7 @@ class Tuts : Extension() {
 
 	override suspend fun setup() {
 		event<MessageCreateEvent> {
-			check { failIf(event.member == event.getGuild()?.selfMember()) }
+			check { failIf(event.member == event.getGuildOrNull()?.selfMember()) }
 
 			action {
 				if (event.message.content.contains("туц", true))

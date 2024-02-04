@@ -13,19 +13,22 @@ import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.i18n.SupportedLocales
 import com.typesafe.config.ConfigRenderOptions
 import dev.kord.common.annotation.KordVoice
-import dev.kord.core.kordLogger
 import dev.kord.gateway.Intent
 import dev.kord.gateway.Intents
 import dev.kord.gateway.NON_PRIVILEGED
 import dev.kord.gateway.PrivilegedIntent
 import io.github.config4k.toConfig
+import mu.KotlinLogging
 import okio.FileSystem
 import okio.Path.Companion.toPath
 import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.exposedLogger
 import org.jetbrains.exposed.sql.transactions.transaction
 import kotlin.system.exitProcess
 import kotlin.time.ExperimentalTime
 import org.jetbrains.exposed.sql.Database as KtDatabase
+
+val botLogger = KotlinLogging.logger("Bot")
 
 @KordVoice
 @ExperimentalTime
@@ -34,7 +37,7 @@ suspend fun main() {
 	val configPath = Config.PATH.toPath()
 
 	if (!FileSystem.SYSTEM.exists(configPath)) {
-		kordLogger.warn("Config not found, creating...")
+		botLogger.warn("Config not found, creating...")
 
 		val renderOptions = ConfigRenderOptions.defaults()
 			.setJson(false)
@@ -54,7 +57,7 @@ suspend fun main() {
 			)
 		}
 
-		kordLogger.warn("Configure the config!")
+		botLogger.warn("Configure the config!")
 		exitProcess(1)
 	}
 

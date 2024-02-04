@@ -1,5 +1,6 @@
 package bot.extensions
 
+import bot.botLogger
 import bot.lib.Config
 import bot.lib.Database
 import com.kotlindiscord.kord.extensions.extensions.Extension
@@ -8,7 +9,6 @@ import com.kotlindiscord.kord.extensions.utils.scheduling.Scheduler
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.channel.createMessage
 import dev.kord.core.entity.channel.GuildMessageChannel
-import dev.kord.core.kordLogger
 import kotlinx.coroutines.delay
 import kotlinx.datetime.*
 import org.koin.core.component.inject
@@ -25,7 +25,7 @@ class StatsReport : Extension() {
 	override suspend fun setup() {
 		val timeZone = TimeZone.of(Config.discord.timeZone)
 
-		kordLogger.info(translationsProvider.translate(
+		botLogger.info(translationsProvider.translate(
 			"extensions.experience.stats.timeZone", bundle, arrayOf(timeZone.id)
 		))
 
@@ -40,12 +40,12 @@ class StatsReport : Extension() {
 		val initialDelay = initPublishTime - initMoment
 
 		// Log start time
-		kordLogger.info(translationsProvider.translate(
+		botLogger.info(translationsProvider.translate(
 			"extensions.experience.stats.reportLog", bundle, arrayOf(initPublishTime)
 		))
 
 		// Log initial delay
-		kordLogger.info(translationsProvider.translate(
+		botLogger.info(translationsProvider.translate(
 			"extensions.experience.stats.logDelay", bundle, arrayOf(initialDelay)
 		))
 
@@ -56,7 +56,7 @@ class StatsReport : Extension() {
 			// Get channel from config
 			val channel = kord.getChannelOf<GuildMessageChannel>(Snowflake(Config.discord.statsReportChannelId))
 			if (channel == null) { // Unload if can't resolve channel
-				kordLogger.error("Failed to get channel! Unloading...")
+				botLogger.error("Failed to get channel! Unloading...")
 
 				doUnload()
 				return@schedule
@@ -67,8 +67,10 @@ class StatsReport : Extension() {
 
 			// Send top
 			channel.createMessage {
-				embeds += Experience.topEmbed(
-					kord, translationsProvider, this@StatsReport.bundle, users, channel.guild, true
+				embeds?.plusAssign(
+					Experience.topEmbed(
+						kord, translationsProvider, this@StatsReport.bundle, users, channel.guild, true
+					)
 				)
 			}
 

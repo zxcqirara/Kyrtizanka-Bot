@@ -28,7 +28,7 @@ class PrivateRooms : Extension() {
 		val config = Config.discord
 
 		val rooms = indexRooms(
-			kord.getGuildOrThrow(Snowflake(config.guildId)),
+			kord.getGuild(Snowflake(config.guildId)),
 			Snowflake(config.privates.categoryId),
 			Snowflake(config.privates.createChannelId)
 		).toMutableList()
@@ -37,7 +37,7 @@ class PrivateRooms : Extension() {
 			action {
 				if (event.state.channelId == Snowflake(Config.discord.privates.createChannelId)) {
 					val member = event.state.getMember()
-					val name = "🔐 ${member.displayName}"
+					val name = "🔐 ${member.nickname}"
 
 					val channel = (event.state.getChannelOrNull() as VoiceChannel).category?.createVoiceChannel(name)
 						?: return@action
@@ -70,7 +70,7 @@ class PrivateRooms : Extension() {
 							PermissionOverwrite.forMember(next.id, Permissions(Permission.ManageChannels))
 						)
 
-						oldChannel.edit { name = "🔐 ${next.displayName}" }
+						oldChannel.edit { name = "🔐 ${next.nickname}" }
 					}
 				}
 			}
