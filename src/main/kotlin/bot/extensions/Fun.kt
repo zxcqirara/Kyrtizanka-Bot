@@ -33,7 +33,7 @@ class Fun : Extension() {
 			description = "extensions.fun.duel.commandDescription"
 
 			action duelCommand@ {
-				val userName = member!!.asMember().nickname
+				val userName = member!!.asMember().effectiveName
 
 				if (arguments.member.isBot) {
 					respond {

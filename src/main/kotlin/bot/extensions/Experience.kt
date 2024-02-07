@@ -289,7 +289,7 @@ class Experience : Extension() {
 							val member = guild.getMemberOrNull(Snowflake(user.id.value))
 								?: kord.getUser(Snowflake(user.id.value))
 
-							val nick = (member as? Member)?.nickname ?: return@forEach
+							val nick = (member as? Member)?.effectiveName ?: return@forEach
 
 							name += nick
 							value = "**$expSymb** ${user.experience} (${user.level}) | **$ratingSymbol** ${user.socialRating}"
